@@ -4,6 +4,13 @@ import AppKit
 @main
 struct GazeFocusApp {
     static func main() {
+        if let index = CommandLine.arguments.firstIndex(of: "--probe-camera") {
+            let seconds = CommandLine.arguments.count > index + 1
+                ? Int(CommandLine.arguments[index + 1]) ?? 8 : 8
+            MainActor.assumeIsolated { CameraProbe.run(seconds: seconds) }
+            return
+        }
+
         if CommandLine.arguments.contains("--diagnose") {
             // main() already runs on the main thread; this just tells the
             // compiler so, without spinning up a run loop.

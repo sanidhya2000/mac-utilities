@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFoundation
+import GazeCore
 
 struct SettingsView: View {
     @ObservedObject var engine: GazeEngine

@@ -19,6 +19,16 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
     private(set) var isRunning = false
 
+    /// Target processing rate. Head pose does not change meaningfully faster
+    /// than this, and Vision is the expensive part of the pipeline.
+    private let targetFPS = 15.0
+    private var lastDelivered = CFAbsoluteTimeGetCurrent()
+
+    /// Frames the camera produced versus frames passed on, so the probe can
+    /// report whether throttling is actually working.
+    private(set) var framesReceived = 0
+    private(set) var framesDelivered = 0
+
     static func authorizationStatus() -> AVAuthorizationStatus {
         AVCaptureDevice.authorizationStatus(for: .video)
     }
@@ -98,13 +108,22 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
             try device.lockForConfiguration()
             defer { device.unlockForConfiguration() }
 
-            let target = CMTime(value: 1, timescale: 15)
-            let ranges = device.activeFormat.videoSupportedFrameRateRanges
-            if let range = ranges.first, range.minFrameDuration <= target,
-               target <= range.maxFrameDuration {
-                device.activeVideoMinFrameDuration = target
-                device.activeVideoMaxFrameDuration = target
-            }
+            guard let range = device.activeFormat.videoSupportedFrameRateRanges.first else { return }
+
+            // Clamp the target into what the device actually supports rather
+            // than giving up when it is not bracketed exactly. The previous
+            // check silently left capture at the format's native rate — around
+            // 26fps here, nearly double the power budget intended.
+            let targetSeconds = 1.0 / 15.0
+            let shortest = CMTimeGetSeconds(range.minFrameDuration)
+            let longest = CMTimeGetSeconds(range.maxFrameDuration)
+            let chosen = min(max(targetSeconds, shortest), longest)
+
+            // Pinning both bounds to the same duration locks the frame rate.
+            let duration = CMTime(seconds: chosen, preferredTimescale: 600)
+            device.activeVideoMinFrameDuration = duration
+            device.activeVideoMaxFrameDuration = duration
+            Log.info("capture capped at \(String(format: "%.0f", 1 / chosen)) fps")
         } catch {
             Log.info("could not cap frame rate: \(error.localizedDescription)")
         }
@@ -114,6 +133,22 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
                        didOutput sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        framesReceived += 1
+
+        // Setting a session preset makes AVFoundation override the device's
+        // frame duration, so the hardware cap cannot be relied on. Dropping
+        // frames here guarantees the processing rate regardless of what the
+        // camera chooses to deliver.
+        let now = CFAbsoluteTimeGetCurrent()
+        guard now - lastDelivered >= 1 / targetFPS - 0.002 else { return }
+        lastDelivered = now
+
+        framesDelivered += 1
         onFrame?(pixelBuffer)
+    }
+
+    func resetCounters() {
+        framesReceived = 0
+        framesDelivered = 0
     }
 }

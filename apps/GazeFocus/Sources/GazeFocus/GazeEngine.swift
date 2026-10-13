@@ -2,6 +2,7 @@ import Foundation
 import AppKit
 import Combine
 import CoreGraphics
+import GazeCore
 
 enum GazeStatus: Equatable {
     case needsCamera
@@ -52,6 +53,7 @@ final class GazeEngine: ObservableObject {
     private var driftSamples: [Double] = []
 
     private var cancellables: Set<AnyCancellable> = []
+    private var permissionWatcher: Timer?
 
     /// A click further than this from the predicted gaze is treated as the
     /// user clicking without looking, and is not learned from.
@@ -62,29 +64,20 @@ final class GazeEngine: ObservableObject {
     func start() {
         guards.onClick = { [weak self] point in self?.learn(from: point) }
         observeSystemState()
+        startPermissionWatcher()
         refreshStatus()
 
         guard canRun else { return }
-
-        camera.onError = { message in Log.error(message) }
-        camera.onFrame = { [weak self] buffer in
-            // Vision runs on the camera queue; results hop to the main actor.
-            self?.tracker.process(buffer)
-        }
-        tracker.onPose = { [weak self] pose in
-            Task { @MainActor in self?.handle(pose: pose) }
-        }
-
-        camera.start(deviceID: Prefs.shared.cameraID)
-        guards.start()
-        fitError = store.model?.meanError
-        Log.info("gaze engine started")
+        startPipeline()
     }
 
     func stop() {
+        permissionWatcher?.invalidate()
+        permissionWatcher = nil
         camera.stop()
         guards.stop()
         tracker.reset()
+        isPipelineLive = false
     }
 
     func restartCamera() {
@@ -99,12 +92,77 @@ final class GazeEngine: ObservableObject {
             && store.isCalibrated
     }
 
+    /// True once the pipeline is actually consuming frames.
+    private var isPipelineLive = false
+
+    /// Permissions can be granted or revoked at any time, and macOS offers no
+    /// notification for either. Without this poll the normal setup flow —
+    /// launch, go to System Settings, grant, come back — leaves the engine
+    /// stuck in `.needsAccessibility` forever, because the only check happened
+    /// at launch. Relaunching was the sole workaround.
+    private func startPermissionWatcher() {
+        guard permissionWatcher == nil else { return }
+        permissionWatcher = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { [weak self] _ in
+            Task { @MainActor in self?.reconcilePermissions() }
+        }
+        permissionWatcher?.tolerance = 0.5
+    }
+
+    private func reconcilePermissions() {
+        let ready = canRun
+
+        if ready && !isPipelineLive && !isPaused {
+            startPipeline()
+            return
+        }
+
+        // Permission withdrawn mid-session: stop cleanly rather than failing
+        // silently on every frame.
+        if !ready && isPipelineLive {
+            camera.stop()
+            tracker.reset()
+            gazePoint = nil
+            isPipelineLive = false
+            Log.info("permissions withdrawn — pipeline stopped")
+        }
+
+        if !ready { refreshStatus() }
+    }
+
+    /// Wires up and starts the capture pipeline. Safe to call repeatedly.
+    private func startPipeline() {
+        guard !isPipelineLive else { return }
+
+        camera.onError = { message in Log.error(message) }
+        camera.onFrame = { [weak self] buffer in
+            // Vision runs on the camera queue; results hop to the main actor.
+            self?.tracker.process(buffer)
+        }
+        tracker.onPose = { [weak self] pose in
+            Task { @MainActor in self?.handle(pose: pose) }
+        }
+
+        camera.start(deviceID: Prefs.shared.cameraID)
+        guards.start()
+        isPipelineLive = true
+        fitError = store.model?.meanError
+        status = .noFace
+        Log.info("pipeline started")
+    }
+
     func refreshStatus() {
         if CameraCapture.authorizationStatus() != .authorized { status = .needsCamera; return }
         if !Accessibility.isTrusted { status = .needsAccessibility; return }
         if !store.isCalibrated { status = .needsCalibration; return }
         if isPaused { status = .paused; return }
-        if case .needsCalibration = status { status = .noFace }
+        // Permissions and calibration are all present; let the pipeline
+        // own the status from here.
+        switch status {
+        case .needsCamera, .needsAccessibility, .needsCalibration:
+            status = isPipelineLive ? .noFace : .waiting(reason: "starting")
+        default:
+            break
+        }
     }
 
     // MARK: - Pipeline
@@ -140,7 +198,11 @@ final class GazeEngine: ObservableObject {
 
         trackDrift(pose: pose, model: model)
 
-        let predicted = model.predict(pose.features)
+        // The fit is linear and so extrapolates without limit; a head turned
+        // further than anything seen during calibration can predict a point off
+        // every display. Clamping keeps it usable for window and pane targeting.
+        let screenFrames = NSScreen.screens.map(FocusSwitcher.globalFrame(of:))
+        let predicted = ScreenGeometry.clamp(model.predict(pose.features), to: screenFrames)
         gazePoint = predicted
 
         // System state first: these are the cases where the user is visibly
@@ -181,7 +243,7 @@ final class GazeEngine: ObservableObject {
         // Inside the edge band the choice of screen is ambiguous; holding still
         // here is what prevents flicker between adjacent displays.
         let margin = Prefs.shared.edgeMargin
-        let inEdgeBand = gaze.x < frame.minX + margin || gaze.x > frame.maxX - margin
+        let inEdgeBand = ScreenGeometry.isNearVerticalEdge(gaze, of: frame, margin: margin)
         if inEdgeBand && screenKey != activeScreenKey {
             status = .waiting(reason: "near screen edge")
             return
@@ -305,14 +367,15 @@ final class GazeEngine: ObservableObject {
         camera.stop()
         tracker.reset()
         gazePoint = nil
+        isPipelineLive = false
         status = .paused
     }
 
     private func handleResume() {
         refreshStatus()
         guard canRun else { return }
-        camera.start(deviceID: Prefs.shared.cameraID)
         tracker.reset()
+        startPipeline()
     }
 
     /// The camera is released whenever the Mac locks or sleeps, so the camera
@@ -355,12 +418,13 @@ final class GazeEngine: ObservableObject {
         camera.stop()
         tracker.reset()
         gazePoint = nil
+        isPipelineLive = false
     }
 
     private func unsuspend() {
         screenLocked = false
         guard !isPaused, canRun else { return }
-        camera.start(deviceID: Prefs.shared.cameraID)
+        startPipeline()
     }
 
     // MARK: - Calibration handoff

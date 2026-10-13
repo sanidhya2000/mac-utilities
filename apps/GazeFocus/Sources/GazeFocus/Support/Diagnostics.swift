@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 import AppKit
+import GazeCore
 
 /// Reports what the app itself can see, which is the only view that matters:
 /// TCC answers depend on the caller's code identity, so a permission can look

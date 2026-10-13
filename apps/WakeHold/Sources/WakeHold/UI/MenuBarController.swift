@@ -74,14 +74,45 @@ final class MenuBarController: NSObject, NSMenuDelegate {
             menu.addItem(label)
 
             for app in engine.busyApps.prefix(8) {
+                let watched = WatchList.isWatched(app.id)
                 let item = NSMenuItem(
-                    title: "  \(app.display) — \(app.reason)",
-                    action: #selector(ignoreApp(_:)), keyEquivalent: "")
+                    title: "\(app.display) — \(app.reason)",
+                    action: #selector(toggleApp(_:)), keyEquivalent: "")
                 item.target = self
-                item.representedObject = app
-                item.image = NSImage(systemSymbolName: app.category.symbol, accessibilityDescription: nil)
-                item.toolTip = "Click to stop watching \(app.display)"
+                item.representedObject = app.id
+                // A checkmark makes the state readable, and makes the action
+                // reversible from the same place — the previous one-way
+                // "ignore" could only be undone in Settings.
+                item.state = watched ? .on : .off
+                item.toolTip = watched
+                    ? "Stop staying awake for \(app.display)"
+                    : "Stay awake for \(app.display) again"
                 menu.addItem(item)
+            }
+        }
+
+        // Apps switched off while they happen to be idle would otherwise
+        // vanish from the menu entirely.
+        let disabledNow = Prefs.shared.ignoredApps
+        if !disabledNow.isEmpty {
+            menu.addItem(.separator())
+            let label = NSMenuItem(title: "Not staying awake for", action: nil, keyEquivalent: "")
+            label.isEnabled = false
+            menu.addItem(label)
+
+            for identifier in disabledNow.sorted().prefix(6) {
+                let item = NSMenuItem(title: displayName(for: identifier),
+                                      action: #selector(toggleApp(_:)), keyEquivalent: "")
+                item.target = self
+                item.representedObject = identifier
+                item.state = .off
+                menu.addItem(item)
+            }
+            if disabledNow.count > 6 {
+                let more = NSMenuItem(title: "  …and \(disabledNow.count - 6) more in Settings",
+                                      action: nil, keyEquivalent: "")
+                more.isEnabled = false
+                menu.addItem(more)
             }
         }
 
@@ -114,9 +145,16 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         menu.addItem(quit)
     }
 
-    @objc private func ignoreApp(_ sender: NSMenuItem) {
-        guard let app = sender.representedObject as? BusyApp else { return }
-        engine.ignore(app)
+    @objc private func toggleApp(_ sender: NSMenuItem) {
+        guard let identifier = sender.representedObject as? String else { return }
+        WatchList.toggle(identifier)
+        engine.refresh()
+    }
+
+    /// Catalogue entries have friendly names; anything else falls back to its
+    /// raw identifier, which is at least recognisable.
+    private func displayName(for identifier: String) -> String {
+        AppCatalog.lookup(bundleID: identifier, executable: identifier)?.display ?? identifier
     }
 
     @objc private func togglePause() { engine.isPaused.toggle() }

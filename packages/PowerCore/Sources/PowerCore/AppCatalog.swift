@@ -3,7 +3,7 @@ import Foundation
 /// Apps WakeHold recognises by name, grouped the way the menu presents them.
 /// Recognition only changes how an app is *labelled* and how eagerly it is
 /// trusted — an unknown app still holds sleep if its resource use is sustained.
-public enum AppCategory: String, CaseIterable, Codable {
+public enum AppCategory: String, CaseIterable, Codable, Hashable {
     case videoAudio  = "Video & Audio"
     case downloads   = "Downloads"
     case aiAgents    = "AI Agents"
@@ -27,11 +27,16 @@ public struct CatalogEntry {
     public let display: String
     public let category: AppCategory
     /// Bundle identifiers, matched case-insensitively.
-    let bundleIDs: [String]
+    public let bundleIDs: [String]
     /// Executable names for command-line tools that have no bundle.
-    let executables: [String]
+    public let executables: [String]
     /// Long jobs tolerate a gentler CPU bar before they count as working.
     public let cpuFloor: Double?
+
+    /// Every identifier this entry can be recognised by. A catalogue entry
+    /// often covers several processes — "npm / node" is five executables — so
+    /// enabling or disabling it has to act on all of them at once.
+    public var identifiers: [String] { bundleIDs + executables }
 
     public init(_ display: String, _ category: AppCategory,
          bundleIDs: [String] = [], executables: [String] = [], cpuFloor: Double? = nil) {
@@ -44,7 +49,7 @@ public struct CatalogEntry {
 }
 
 public enum AppCatalog {
-    static let entries: [CatalogEntry] = [
+    public static let entries: [CatalogEntry] = [
         // Video & audio — long renders and exports, often at low steady CPU.
         .init("Final Cut Pro", .videoAudio, bundleIDs: ["com.apple.FinalCut"], cpuFloor: 8),
         .init("Compressor", .videoAudio, bundleIDs: ["com.apple.Compressor"], cpuFloor: 8),

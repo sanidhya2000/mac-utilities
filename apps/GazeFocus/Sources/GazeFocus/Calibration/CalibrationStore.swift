@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import GazeCore
 
 /// Persists calibration samples and the model fitted from them.
 ///

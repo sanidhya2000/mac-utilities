@@ -2,13 +2,20 @@ import Foundation
 import CoreGraphics
 
 /// One calibration observation: where the dot was, and how the head looked.
-struct CalibrationSample: Codable {
-    let features: [Double]
+public struct CalibrationSample: Codable {
+    public let features: [Double]
     /// Target point in global display coordinates.
-    let targetX: Double
-    let targetY: Double
+    public let targetX: Double
+    public let targetY: Double
     /// Face area at capture time, used to detect distance drift later.
-    let area: Double
+    public let area: Double
+
+    public init(features: [Double], targetX: Double, targetY: Double, area: Double) {
+        self.features = features
+        self.targetX = targetX
+        self.targetY = targetY
+        self.area = area
+    }
 }
 
 /// Maps head pose to a point on the desktop.
@@ -22,32 +29,32 @@ struct CalibrationSample: Codable {
 /// Calibration yields only a handful of points, often nearly collinear when
 /// displays sit in a row, and unregularised least squares turns that into wild
 /// extrapolation. The penalty costs a little accuracy and buys stability.
-struct GazeModel: Codable {
+public struct GazeModel: Codable {
 
     /// Weights mapping the feature vector to x and y.
     private let weightsX: [Double]
     private let weightsY: [Double]
     /// Mean face area across calibration, the baseline for drift detection.
-    let referenceArea: Double
+    public let referenceArea: Double
     /// Mean residual error in points — reported to the user as fit quality.
-    let meanError: Double
-    let sampleCount: Int
+    public let meanError: Double
+    public let sampleCount: Int
 
-    static let ridgeLambda = 1e-4
+    public static let ridgeLambda = 1e-4
 
-    func predict(_ features: [Double]) -> CGPoint {
+    public func predict(_ features: [Double]) -> CGPoint {
         CGPoint(x: dot(weightsX, features), y: dot(weightsY, features))
     }
 
     /// How far the user has moved from their calibrated distance, as a ratio.
     /// Face area scales with the square of apparent size, hence the square root.
-    func distanceDrift(area: Double) -> Double {
+    public func distanceDrift(area: Double) -> Double {
         guard referenceArea > 0, area > 0 else { return 1 }
         return (area / referenceArea).squareRoot()
     }
 
     /// Fits a model, or returns nil when there are too few samples to solve.
-    static func fit(_ samples: [CalibrationSample]) -> GazeModel? {
+    public static func fit(_ samples: [CalibrationSample]) -> GazeModel? {
         guard samples.count >= HeadPose.featureCount else { return nil }
 
         let rows = samples.map(\.features)

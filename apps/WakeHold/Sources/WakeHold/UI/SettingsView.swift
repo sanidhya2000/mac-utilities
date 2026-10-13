@@ -13,6 +13,9 @@ struct SettingsView: View {
     @State private var launchAtLogin = Prefs.shared.launchAtLogin
     @State private var ignored = Prefs.shared.ignoredApps.sorted()
     @State private var lidError: String?
+    /// WatchList reads from UserDefaults, which SwiftUI cannot observe; bumping
+    /// this is what redraws the toggles after a change.
+    @State private var watchListVersion = 0
 
     var body: some View {
         Form {
@@ -68,21 +71,46 @@ struct SettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
-            Section("Ignored apps") {
-                if ignored.isEmpty {
-                    Text("Nothing ignored. Click an app in the menu to stop watching it.")
-                        .font(.caption).foregroundStyle(.secondary)
-                } else {
-                    ForEach(ignored, id: \.self) { identifier in
-                        HStack {
-                            Text(identifier).lineLimit(1).truncationMode(.middle)
-                            Spacer()
-                            Button("Watch again") {
-                                engine.unignore(identifier)
-                                ignored = Prefs.shared.ignoredApps.sorted()
-                            }
-                            .buttonStyle(.link)
+            Section("Stay awake for") {
+                Text("Turn off anything that is always busy — a VM, a sync client — so it can't hold your Mac awake indefinitely.")
+                    .font(.caption).foregroundStyle(.secondary)
+
+                ForEach(WatchList.byCategory, id: \.category) { group in
+                    DisclosureGroup {
+                        ForEach(group.entries, id: \.display) { entry in
+                            Toggle(entry.display, isOn: Binding(
+                                get: { WatchList.isWatched(entry) },
+                                set: { WatchList.setWatched(entry, $0); bumpWatchList() }
+                            ))
                         }
+                    } label: {
+                        HStack {
+                            Label(group.category.rawValue, systemImage: group.category.symbol)
+                            Spacer()
+                            Text(enabledSummary(for: group.entries))
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                // Apps switched off from the menu that the catalogue has never
+                // heard of; without this they would be unreachable.
+                if !WatchList.disabledUnknowns.isEmpty {
+                    DisclosureGroup("Other apps you turned off") {
+                        ForEach(WatchList.disabledUnknowns, id: \.self) { identifier in
+                            Toggle(identifier, isOn: Binding(
+                                get: { WatchList.isWatched(identifier) },
+                                set: { WatchList.setWatched(identifier, $0); bumpWatchList() }
+                            ))
+                            .lineLimit(1).truncationMode(.middle)
+                        }
+                    }
+                }
+
+                if !Prefs.shared.ignoredApps.isEmpty {
+                    Button("Turn everything back on") {
+                        WatchList.enableAll()
+                        bumpWatchList()
                     }
                 }
             }
@@ -93,7 +121,19 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 460, height: 560)
+        .id(watchListVersion)
+        .frame(width: 460, height: 620)
+    }
+
+    private func bumpWatchList() {
+        watchListVersion += 1
+        engine.refresh()
+    }
+
+    /// "12 of 12" reads clearly; a partially disabled group stands out.
+    private func enabledSummary(for entries: [CatalogEntry]) -> String {
+        let on = entries.filter(WatchList.isWatched).count
+        return on == entries.count ? "all" : "\(on) of \(entries.count)"
     }
 
     private func formatted(_ seconds: Int) -> String {

@@ -8,6 +8,13 @@ public struct PowerState {
     public let lowPowerMode: Bool
     public let hasBattery: Bool
 
+    public init(onAC: Bool, percentage: Int, lowPowerMode: Bool, hasBattery: Bool) {
+        self.onAC = onAC
+        self.percentage = percentage
+        self.lowPowerMode = lowPowerMode
+        self.hasBattery = hasBattery
+    }
+
     /// Desktops have no battery, so the floor never applies to them.
     public func batteryTooLow(floor: Int) -> Bool {
         guard hasBattery, !onAC else { return false }

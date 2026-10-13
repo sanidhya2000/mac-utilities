@@ -131,13 +131,7 @@ final class WakeEngine: ObservableObject {
         }
     }
 
-    func ignore(_ app: BusyApp) {
-        Prefs.shared.ignoredApps.insert(app.id)
-        tick()
-    }
-
-    func unignore(_ identifier: String) {
-        Prefs.shared.ignoredApps.remove(identifier)
-        tick()
-    }
+    /// Re-evaluates immediately, so toggling an app in the menu takes effect
+    /// without waiting for the next sampling interval.
+    func refresh() { tick() }
 }

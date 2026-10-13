@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFoundation
+import GazeCore
 
 /// Four steps: camera, Accessibility, calibration, done.
 struct OnboardingView: View {
@@ -13,6 +14,8 @@ struct OnboardingView: View {
     @State private var errorMessage: String?
     /// Accessibility trust cannot be observed, so it is polled while visible.
     @State private var poll: Timer?
+    /// Seconds spent on the Accessibility step with the grant still unseen.
+    @State private var axWaitSeconds = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -53,13 +56,7 @@ struct OnboardingView: View {
             action: requestCamera,
             actionLabel: "Allow Camera…")
 
-        case 1: permissionStep(
-            icon: "accessibility",
-            title: "Allow Accessibility access",
-            body: "Moving keyboard focus between windows is something only Accessibility permission can do. Open System Settings, enable GazeFocus in the list, then come back here.",
-            granted: axGranted,
-            action: requestAccessibility,
-            actionLabel: "Open System Settings…")
+        case 1: accessibilityStep
 
         case 2: calibrationStep
 
@@ -80,6 +77,35 @@ struct OnboardingView: View {
                     .foregroundStyle(.green)
             } else {
                 Button(actionLabel, action: action).controlSize(.large)
+            }
+            Spacer()
+        }
+    }
+
+    private var accessibilityStep: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Image(systemName: "accessibility").font(.system(size: 34)).foregroundStyle(.tint)
+            Text("Allow Accessibility access").font(.title3.weight(.semibold))
+            Text("Moving keyboard focus between windows is something only Accessibility permission can do. Open System Settings, switch GazeFocus on in the list, then come back here.")
+                .foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+
+            if axGranted {
+                Label("Granted", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
+            } else {
+                Button("Open System Settings…", action: requestAccessibility)
+                    .controlSize(.large)
+
+                // Shown only once waiting has clearly not worked, so it does
+                // not distract from the normal path.
+                if axWaitSeconds >= 6 {
+                    Divider().padding(.vertical, 2)
+                    Text("Already switched it on?")
+                        .font(.callout.weight(.medium))
+                    Text("macOS often won't let an app that is already running notice a new Accessibility grant. Relaunching fixes it.")
+                        .font(.callout).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button("Relaunch GazeFocus", action: Relaunch.now)
+                }
             }
             Spacer()
         }
@@ -182,6 +208,7 @@ struct OnboardingView: View {
             Task { @MainActor in
                 cameraGranted = CameraCapture.authorizationStatus() == .authorized
                 axGranted = Accessibility.isTrusted
+                if step == 1 && !axGranted { axWaitSeconds += 1 } else { axWaitSeconds = 0 }
             }
         }
     }

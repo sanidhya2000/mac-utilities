@@ -2,6 +2,7 @@ import Foundation
 import AppKit
 import SwiftUI
 import CoreGraphics
+import GazeCore
 
 /// Runs the follow-the-dot calibration across every display.
 ///

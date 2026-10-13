@@ -92,6 +92,16 @@ final class MenuBarController: NSObject, NSMenuDelegate {
             setup.target = self
             menu.addItem(setup)
 
+            // The common case for being stuck here is a permission granted
+            // after launch, which only a relaunch will surface.
+            if case .needsAccessibility = engine.status {
+                let relaunch = NSMenuItem(title: "Relaunch GazeFocus",
+                                          action: #selector(relaunchApp), keyEquivalent: "")
+                relaunch.target = self
+                relaunch.toolTip = "Use this if you have already allowed Accessibility"
+                menu.addItem(relaunch)
+            }
+
         default:
             let toggle = NSMenuItem(
                 title: engine.isPaused ? "Resume" : "Pause",
@@ -128,6 +138,8 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     }
 
     @objc private func togglePause() { engine.isPaused.toggle() }
+
+    @objc private func relaunchApp() { Relaunch.now() }
 
     @objc private func toggleDot() {
         Prefs.shared.showGazeDot.toggle()

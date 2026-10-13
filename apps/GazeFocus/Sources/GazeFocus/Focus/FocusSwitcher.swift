@@ -2,6 +2,7 @@ import Foundation
 import AppKit
 import ApplicationServices
 import CoreGraphics
+import GazeCore
 
 /// Moves keyboard focus to a window, and remembers where focus was on each
 /// screen so looking back at a display restores what you were last using
@@ -94,9 +95,7 @@ final class FocusSwitcher {
     /// space everything else in this app works in.
     static func globalFrame(of screen: NSScreen) -> CGRect {
         guard let primary = NSScreen.screens.first else { return screen.frame }
-        let flippedY = primary.frame.maxY - screen.frame.maxY
-        return CGRect(x: screen.frame.origin.x, y: flippedY,
-                      width: screen.frame.width, height: screen.frame.height)
+        return ScreenGeometry.flipToTopLeft(screen.frame, primary: primary.frame)
     }
 
     static func screen(containing frame: CGRect) -> NSScreen? {
@@ -113,19 +112,13 @@ final class FocusSwitcher {
     /// Nearest screen when the point lands in a gap or past the outer edge,
     /// which happens constantly with imperfect calibration.
     static func nearestScreen(to point: CGPoint) -> NSScreen? {
-        NSScreen.screens.min { a, b in
-            globalFrame(of: a).distance(to: point) < globalFrame(of: b).distance(to: point)
-        }
+        let screens = NSScreen.screens
+        let frames = screens.map(globalFrame(of:))
+        guard let index = ScreenGeometry.nearestFrame(to: point, in: frames) else { return nil }
+        return screens[index]
     }
 }
 
 extension CGRect {
     var area: CGFloat { width * height }
-
-    /// Zero when the point is inside.
-    func distance(to point: CGPoint) -> CGFloat {
-        let dx = max(minX - point.x, 0, point.x - maxX)
-        let dy = max(minY - point.y, 0, point.y - maxY)
-        return hypot(dx, dy)
-    }
 }

@@ -1,45 +1,31 @@
 import Foundation
 import Vision
 import CoreVideo
-
-/// One reading of where the head is and which way it is turned.
-struct HeadPose {
-    /// Left/right rotation in radians; positive is turning to the user's left.
-    let yaw: Double
-    /// Up/down rotation in radians.
-    let pitch: Double
-    let roll: Double
-    /// Face centre within the frame, 0–1, origin bottom-left.
-    let centerX: Double
-    let centerY: Double
-    /// Face box area as a fraction of the frame — a proxy for distance, used to
-    /// notice when someone has moved closer or further than when they calibrated.
-    let area: Double
-    let timestamp: Date
-
-    /// The feature vector the screen mapping is fitted against. Yaw alone is a
-    /// weak signal because people turn their eyes as well as their head, so the
-    /// face's position in frame is included — it shifts measurably when someone
-    /// looks across to another display.
-    var features: [Double] { [1, yaw, pitch, centerX, centerY] }
-
-    static let featureCount = 5
-}
+import GazeCore
 
 /// Runs Vision's face-landmark request over camera frames and smooths the
 /// result. Everything stays on-device; Vision never touches the network.
 final class HeadPoseTracker {
 
-    private let sequenceHandler = VNSequenceRequestHandler()
 
     /// Exponential smoothing factor. Low enough to kill per-frame jitter,
     /// high enough that a real head turn still lands within ~100ms.
     private let smoothing = 0.35
     private var smoothed: HeadPose?
 
-    /// Frames in a row with no face. Used to stop acting on a stale pose when
-    /// the user walks away.
+    /// When a face was last seen. Used to stop acting on a stale pose once
+    /// the user has actually walked away.
+    private var lastSeenFace = Date.distantPast
     private(set) var missingFrames = 0
+
+    /// How long a pose stays usable after detection drops out.
+    ///
+    /// Detection is far from continuous in practice: at a desk, with the camera
+    /// below the monitor being looked at, a face is resolvable in only a
+    /// fraction of frames. Counting consecutive misses made tracking flap
+    /// between "tracking" and "can't see you" constantly; a time budget rides
+    /// over the gaps while still noticing a genuine departure.
+    private let poseGraceSeconds: TimeInterval = 1.8
 
     var onPose: ((HeadPose?) -> Void)?
 
@@ -48,8 +34,16 @@ final class HeadPoseTracker {
         // Revision 3 reports pitch as well as yaw and roll.
         request.revision = VNDetectFaceRectanglesRequestRevision3
 
+        // A stateless per-image handler, not VNSequenceRequestHandler.
+        // The sequence handler carries tracking state between frames and
+        // assumes they are contiguous; once frames are dropped to hold the
+        // processing rate down, its detection rate collapses — measured at
+        // roughly 5% versus 98% here. Face rectangles need no such state.
+        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer,
+                                            orientation: .leftMirrored,
+                                            options: [:])
         do {
-            try sequenceHandler.perform([request], on: pixelBuffer, orientation: .leftMirrored)
+            try handler.perform([request])
         } catch {
             Log.error("vision request failed: \(error.localizedDescription)")
             return
@@ -57,15 +51,19 @@ final class HeadPoseTracker {
 
         guard let face = bestFace(in: request.results) else {
             missingFrames += 1
-            // A couple of dropped frames is normal — blinking, a hand passing by.
-            if missingFrames > 8 {
+            // Keep reporting the last known pose until the grace period runs
+            // out, so an intermittent detection does not look like absence.
+            if Date().timeIntervalSince(lastSeenFace) > poseGraceSeconds {
                 smoothed = nil
                 onPose?(nil)
+            } else if let smoothed {
+                onPose?(smoothed)
             }
             return
         }
 
         missingFrames = 0
+        lastSeenFace = Date()
         let raw = HeadPose(
             yaw: face.yaw?.doubleValue ?? 0,
             pitch: face.pitch?.doubleValue ?? 0,
@@ -106,5 +104,6 @@ final class HeadPoseTracker {
     func reset() {
         smoothed = nil
         missingFrames = 0
+        lastSeenFace = .distantPast
     }
 }
