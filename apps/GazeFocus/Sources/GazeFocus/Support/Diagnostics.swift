@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 import AppKit
+import Darwin
 import GazeCore
 
 /// Reports what the app itself can see, which is the only view that matters:
@@ -28,7 +29,14 @@ enum Diagnostics {
         @unknown default:    cameraText = "unknown"
         }
         print("\ncamera:        \(cameraText)")
-        print("accessibility: \(Accessibility.isTrusted ? "trusted" : "NOT TRUSTED")")
+
+        // TCC answers depend on the *responsible* process, not just this one.
+        // Launched from a terminal, the answer below is the terminal's — which
+        // makes this reading actively misleading when the terminal happens to
+        // have Accessibility and the app does not.
+        let launchedFromTerminal = isLaunchedFromTerminal()
+        print("accessibility: \(Accessibility.isTrusted ? "trusted" : "NOT TRUSTED")"
+              + (launchedFromTerminal ? "  ← see warning below" : ""))
 
         print("\ncameras found:")
         fflush(stdout)
@@ -60,6 +68,20 @@ enum Diagnostics {
         print("  launcher front:  \(SystemGuards.activeLauncher ?? "none")")
         print("  blocking reason: \(SystemGuards.blockingReason() ?? "none — safe to switch")")
 
+        if launchedFromTerminal {
+            print("""
+
+                WARNING: run from a terminal, so the accessibility line above
+                reports your TERMINAL's permission, not GazeFocus's. macOS
+                attributes TCC to the responsible parent process.
+
+                For the real answer, open GazeFocus normally and look at the
+                menu bar icon, or run:
+                    open -a GazeFocus
+                A warning triangle there means the app itself is not trusted.
+                """)
+        }
+
         if !Accessibility.isTrusted {
             print("""
 
@@ -71,4 +93,20 @@ enum Diagnostics {
                 """)
         }
     }
+}
+
+
+/// True when the parent is a shell or terminal rather than launchd, meaning
+/// TCC answers are inherited from that parent instead of belonging to us.
+private func isLaunchedFromTerminal() -> Bool {
+    let parent = getppid()
+    // launchd is pid 1; anything else started us interactively.
+    guard parent != 1 else { return false }
+
+    var name = [CChar](repeating: 0, count: 1024)
+    guard proc_pidpath(parent, &name, UInt32(name.count)) > 0 else { return true }
+    let path = String(cString: name)
+    // A GUI relaunch goes through launchd; a shell, terminal or SSH session
+    // does not.
+    return !path.hasSuffix("/launchd")
 }

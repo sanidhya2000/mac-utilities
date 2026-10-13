@@ -12,6 +12,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     private let engine: WakeEngine
     private var cancellables: Set<AnyCancellable> = []
     private var settingsWindow: NSWindow?
+    private var appsWindow: NSWindow?
 
     init(engine: WakeEngine) {
         self.engine = engine
@@ -69,7 +70,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
 
         if !engine.busyApps.isEmpty {
             menu.addItem(.separator())
-            let label = NSMenuItem(title: "Working now", action: nil, keyEquivalent: "")
+            let label = NSMenuItem(title: "Staying awake for", action: nil, keyEquivalent: "")
             label.isEnabled = false
             menu.addItem(label)
 
@@ -96,7 +97,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         let disabledNow = Prefs.shared.ignoredApps
         if !disabledNow.isEmpty {
             menu.addItem(.separator())
-            let label = NSMenuItem(title: "Not staying awake for", action: nil, keyEquivalent: "")
+            let label = NSMenuItem(title: "Not watching", action: nil, keyEquivalent: "")
             label.isEnabled = false
             menu.addItem(label)
 
@@ -109,7 +110,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
                 menu.addItem(item)
             }
             if disabledNow.count > 6 {
-                let more = NSMenuItem(title: "  …and \(disabledNow.count - 6) more in Settings",
+                let more = NSMenuItem(title: "  …and \(disabledNow.count - 6) more — see Choose Apps",
                                       action: nil, keyEquivalent: "")
                 more.isEnabled = false
                 menu.addItem(more)
@@ -136,6 +137,11 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         toggle.target = self
         menu.addItem(toggle)
 
+        let apps = NSMenuItem(title: "Choose Apps…", action: #selector(openApps), keyEquivalent: "a")
+        apps.target = self
+        apps.toolTip = "Pick which apps may keep your Mac awake"
+        menu.addItem(apps)
+
         let settings = NSMenuItem(title: "Settings…", action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
@@ -158,6 +164,25 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     }
 
     @objc private func togglePause() { engine.isPaused.toggle() }
+
+    @objc private func openApps() {
+        if let appsWindow {
+            appsWindow.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 460, height: 560),
+                              styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        window.title = "Choose Apps"
+        window.contentView = NSHostingView(rootView: AppsView(engine: engine))
+        window.isReleasedWhenClosed = false
+        if let frame = (NSScreen.main ?? NSScreen.screens.first)?.visibleFrame {
+            window.setFrameOrigin(CGPoint(x: frame.midX - 230, y: frame.midY - 280))
+        }
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        appsWindow = window
+    }
 
     @objc private func openSettings() {
         if let settingsWindow {

@@ -71,48 +71,15 @@ struct SettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
-            Section("Stay awake for") {
-                Text("Turn off anything that is always busy — a VM, a sync client — so it can't hold your Mac awake indefinitely.")
+            Section("Apps") {
+                LabeledContent("Watching") {
+                    Text(Prefs.shared.ignoredApps.isEmpty
+                         ? "everything"
+                         : "all but \(Prefs.shared.ignoredApps.count)")
+                        .foregroundStyle(.secondary)
+                }
+                Text("Choose which apps may keep your Mac awake from the menu bar icon → Choose Apps.")
                     .font(.caption).foregroundStyle(.secondary)
-
-                ForEach(WatchList.byCategory, id: \.category) { group in
-                    DisclosureGroup {
-                        ForEach(group.entries, id: \.display) { entry in
-                            Toggle(entry.display, isOn: Binding(
-                                get: { WatchList.isWatched(entry) },
-                                set: { WatchList.setWatched(entry, $0); bumpWatchList() }
-                            ))
-                        }
-                    } label: {
-                        HStack {
-                            Label(group.category.rawValue, systemImage: group.category.symbol)
-                            Spacer()
-                            Text(enabledSummary(for: group.entries))
-                                .font(.caption).foregroundStyle(.secondary)
-                        }
-                    }
-                }
-
-                // Apps switched off from the menu that the catalogue has never
-                // heard of; without this they would be unreachable.
-                if !WatchList.disabledUnknowns.isEmpty {
-                    DisclosureGroup("Other apps you turned off") {
-                        ForEach(WatchList.disabledUnknowns, id: \.self) { identifier in
-                            Toggle(identifier, isOn: Binding(
-                                get: { WatchList.isWatched(identifier) },
-                                set: { WatchList.setWatched(identifier, $0); bumpWatchList() }
-                            ))
-                            .lineLimit(1).truncationMode(.middle)
-                        }
-                    }
-                }
-
-                if !Prefs.shared.ignoredApps.isEmpty {
-                    Button("Turn everything back on") {
-                        WatchList.enableAll()
-                        bumpWatchList()
-                    }
-                }
             }
 
             Section {
