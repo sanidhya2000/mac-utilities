@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy — AFK</title>
+<link rel="stylesheet" href="site.css">
+<style>:root { --accent: #059669; --accent-soft: #e7f8f1; }
+@media (prefers-color-scheme: dark) { :root { --accent-soft: #0c2219; } }</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="glyph">🔒</span> AFK</a>
+    <nav><a href="index.html">Home</a><a href="download.html">Download</a></nav>
+  </div>
+</header>
+
+<section style="border-top:none">
+  <div class="wrap prose">
+    <h1 style="font-size:34px;letter-spacing:-.02em">Privacy</h1>
+    <p style="font-size:17px">Locks your Mac and keeps your work running. Here is exactly what that involves.</p>
+
+    <h2>What it reads</h2>
+    <p>While a session is armed, AFK reads per-process CPU, disk and network counters — the same figures Activity Monitor shows — so it can tell you what was running and, in "until the work finishes" mode, know when to let go.</p>
+
+    <h2>What leaves your Mac</h2>
+    <p>
+      Nothing. AFK ships without the network entitlement, so the operating system
+      itself prevents it from opening a connection. There is no analytics, no crash
+      reporting, no update check, and no account system.
+    </p>
+
+    <h2>What is stored</h2>
+    <p>Your preferences and a summary of the last session (when it started, how long it held, which apps were busy), in the macOS defaults store under <code>com.afkapp.mac</code>.</p>
+
+    <h2>What it cannot see</h2>
+    <p>
+      AFK has no access to your files, your keystrokes, your screen, or the contents
+      of any application. Process names and resource counters are the limit of its view —
+      the same information any user on the machine can read from Activity Monitor.
+    </p>
+
+    <h2>Changes made to your system</h2>
+    <p>
+      AFK holds a standard macOS power assertion, which you can inspect at any time with
+      <code>pmset -g assertions</code>. The assertion is owned by the process and disappears
+      the moment the app quits or crashes.
+    </p>
+    <p>
+      Lid-closed mode is the one setting that outlives the app, because it changes a
+      system-wide flag. That is why it asks for admin approval, and why a watchdog puts it
+      back if the app stops running.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>AFK — free and open source</span>
+    <span class="spacer"></span>
+    <a href="index.html">Home</a>
+    <a href="download.html">Download</a>
+    <a href="../index.html">The suite</a>
+  </div>
+</footer>
+
+</body>
+</html>

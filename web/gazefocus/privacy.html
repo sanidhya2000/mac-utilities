@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy — GazeFocus</title>
+<link rel="stylesheet" href="site.css">
+<style>:root { --accent: #2563eb; }</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="glyph">◎</span> GazeFocus</a>
+    <nav><a href="index.html">Home</a><a href="download.html">Download</a></nav>
+  </div>
+</header>
+
+<section style="border-top:none">
+  <div class="wrap prose">
+    <h1 style="font-size:34px;letter-spacing:-.02em">Privacy</h1>
+    <p style="font-size:17px">
+      GazeFocus uses your camera continuously while it runs, so this page is specific
+      rather than vague.
+    </p>
+
+    <h2>What the camera is used for</h2>
+    <p>
+      A 720p video stream at 15 frames per second is handed to Apple's Vision framework,
+      which returns the angle of your head and where your face sits in the frame. Those
+      few numbers are all GazeFocus keeps from each frame.
+    </p>
+
+    <h2>What happens to the video</h2>
+    <p>
+      Each frame exists in memory for a few milliseconds and is then released. No frame
+      is written to disk, cached, buffered to a file, or shown in any window. There is no
+      recording feature and no way to enable one.
+    </p>
+
+    <h2>What leaves your Mac</h2>
+    <p>
+      Nothing. GazeFocus ships without the network entitlement, which means the operating
+      system itself prevents it from opening a connection. There is no analytics, no crash
+      reporting, no update check, and no account system — the app is free, so there is
+      nothing to verify.
+    </p>
+
+    <h2>What is stored on disk</h2>
+    <p>
+      One file: <code>~/Library/Application Support/GazeFocus/calibration.json</code>. It
+      contains your calibration points — head angles paired with screen coordinates — and
+      nothing else. No images. Delete it any time; the app simply asks you to recalibrate.
+    </p>
+    <p>
+      Your preferences live in the standard macOS defaults store under
+      <code>com.gazefocus.app</code>.
+    </p>
+
+    <h2>When the camera turns off</h2>
+    <p>
+      GazeFocus releases the camera when you pause it (⇧⌘G), when your Mac locks, and when
+      it sleeps. The camera indicator light is an honest signal: if it's off, GazeFocus
+      isn't looking.
+    </p>
+
+    <h2>Accessibility permission</h2>
+    <p>
+      This permission lets GazeFocus raise and focus windows. It is used for exactly that.
+      It is not used to read window contents, log keystrokes, or inspect what you are
+      working on. The app does observe <em>that</em> a key was pressed — never which one —
+      purely so it can avoid moving focus while you're typing.
+    </p>
+
+    <h2>Contact</h2>
+    <p>Questions about any of this are welcome — the source is public, so the answers are checkable.</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>GazeFocus — free and open source</span>
+    <span class="spacer"></span>
+    <a href="index.html">Home</a>
+    <a href="download.html">Download</a>
+  </div>
+</footer>
+
+</body>
+</html>

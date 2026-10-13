@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download GazeFocus</title>
+<meta name="description" content="Download GazeFocus free for macOS 14 or later.">
+<link rel="stylesheet" href="site.css">
+<style>:root { --accent: #2563eb; }</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="glyph">◎</span> GazeFocus</a>
+    <nav>
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#features">Features</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero wrap" style="padding-bottom:40px">
+  <h1>Download GazeFocus</h1>
+  <p class="lede">Free. No account, no trial, nothing to unlock.</p>
+  <div class="actions">
+    <a class="btn" href="GazeFocus.dmg" download>Download GazeFocus.dmg</a>
+  </div>
+  <p class="meta">Version 1.0.0 · macOS 14 Sonoma or later · Apple silicon &amp; Intel</p>
+</div>
+
+<section>
+  <div class="wrap prose">
+    <h2>Installing</h2>
+    <ol class="steps" style="margin-top:20px">
+      <li><strong>Open the disk image</strong><span>Drag GazeFocus into your Applications folder.</span></li>
+      <li><strong>Open it the first time</strong><span>Right-click the app and choose <em>Open</em>, then confirm. See the note below on why.</span></li>
+      <li><strong>Work through setup</strong><span>Camera, Accessibility, then calibration. About two minutes.</span></li>
+    </ol>
+
+    <div class="callout" style="margin-top:34px">
+      <strong>macOS will warn you on first launch.</strong>
+      <p>
+        GazeFocus isn't signed with a paid Apple Developer certificate, so Gatekeeper
+        shows &ldquo;GazeFocus cannot be opened because the developer cannot be
+        verified.&rdquo; This is expected. Right-click the app in Applications, choose
+        <em>Open</em>, and click <em>Open</em> in the dialog. You only do this once.
+      </p>
+      <p>
+        If the dialog won't let you through, go to System&nbsp;Settings ›
+        Privacy&nbsp;&amp;&nbsp;Security and click <em>Open Anyway</em>.
+      </p>
+    </div>
+
+    <h2>The two permissions it asks for</h2>
+    <h3>Camera</h3>
+    <p>
+      Used to read the position of your head. Frames are processed on your Mac by
+      Apple's Vision framework and discarded immediately — never written to disk, never
+      uploaded. The app has no network entitlement at all.
+    </p>
+    <h3>Accessibility</h3>
+    <p>
+      Required to move keyboard focus between other applications' windows. There is no
+      other API on macOS that can do this. macOS will send you to
+      System&nbsp;Settings › Privacy&nbsp;&amp;&nbsp;Security › Accessibility to tick
+      the box.
+    </p>
+
+    <h2>Uninstalling</h2>
+    <p>
+      Quit from the menu bar, drag the app to the Trash, and delete
+      <code>~/Library/Application Support/GazeFocus</code> if you want the calibration
+      data gone too. Nothing else is left behind.
+    </p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>GazeFocus — free and open source</span>
+    <span class="spacer"></span>
+    <a href="index.html">Home</a>
+    <a href="privacy.html">Privacy</a>
+  </div>
+</footer>
+
+</body>
+</html>
