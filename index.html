@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three small Mac utilities for people who leave things running</title>
+<meta name="description" content="GazeFocus, WakeHold and AFK — three free macOS menu bar utilities for developers. On-device, no accounts, no tracking.">
+<link rel="stylesheet" href="site.css">
+<style>
+:root { --accent: #4f46e5; --accent-soft: #eef0ff; }
+@media (prefers-color-scheme: dark) { :root { --accent-soft: #171634; } }
+.apps { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 900px) { .apps { grid-template-columns: 1fr; } }
+.app {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 26px 24px; background: var(--surface);
+  display: flex; flex-direction: column; text-decoration: none; color: inherit;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.app:hover { transform: translateY(-3px); border-color: var(--tint); }
+.app .mark {
+  width: 50px; height: 50px; border-radius: 13px;
+  display: grid; place-items: center; font-size: 24px; margin-bottom: 16px;
+}
+.app h3 { font-size: 19px; margin: 0 0 4px; font-weight: 650; }
+.app .what { font-size: 14px; color: var(--tint); font-weight: 560; margin: 0 0 11px; }
+.app p.desc { color: var(--muted); font-size: 14.8px; margin: 0 0 18px; flex: 1; }
+.app .go { font-size: 14.5px; font-weight: 560; color: var(--tint); }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="glyph">⌘</span> Mac utilities</a>
+    <nav>
+      <a href="gazefocus/index.html">GazeFocus</a>
+      <a href="wakehold/index.html">WakeHold</a>
+      <a href="afk/index.html">AFK</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero wrap">
+  <span class="pill">Free · Open source · macOS 14+</span>
+  <h1>Three small utilities for<br>people who leave things running.</h1>
+  <p class="lede">
+    Menu bar tools that get out of the way. Everything runs on your Mac —
+    no accounts, no telemetry, and not one of them can open a network connection.
+  </p>
+</div>
+
+<section style="border-top:none;padding-top:10px">
+  <div class="wrap">
+    <div class="apps">
+
+      <a class="app" href="gazefocus/index.html" style="--tint:#2563eb">
+        <span class="mark" style="background:#eff4ff;color:#2563eb">◎</span>
+        <h3>GazeFocus</h3>
+        <p class="what">Focus follows your eyes</p>
+        <p class="desc">
+          Moves keyboard focus to the screen you're looking at, so you stop
+          clicking before you type. Works across monitors, windows and split panes.
+        </p>
+        <span class="go">Learn more →</span>
+      </a>
+
+      <a class="app" href="wakehold/index.html" style="--tint:#d97706">
+        <span class="mark" style="background:#fef5e7;color:#d97706">☕</span>
+        <h3>WakeHold</h3>
+        <p class="what">Awake while it works</p>
+        <p class="desc">
+          Keeps your Mac awake only while something is genuinely busy — a render,
+          a build, a download — then lets it sleep. No more guessing timers.
+        </p>
+        <span class="go">Learn more →</span>
+      </a>
+
+      <a class="app" href="afk/index.html" style="--tint:#059669">
+        <span class="mark" style="background:#e7f8f1;color:#059669">🔒</span>
+        <h3>AFK</h3>
+        <p class="what">Lock the Mac, not the work</p>
+        <p class="desc">
+          Locks your machine when you step away while your builds, agents and
+          uploads keep running behind the lock screen.
+        </p>
+        <span class="go">Learn more →</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>WakeHold or AFK?</h2>
+    <p class="sub">They solve adjacent problems and work well together.</p>
+    <div class="grid c2">
+      <div class="card">
+        <h3>WakeHold is automatic</h3>
+        <p>Always on in the background, inferring from activity whether to hold sleep. You never think about it. It can let go if a process goes quiet.</p>
+      </div>
+      <div class="card">
+        <h3>AFK is deliberate</h3>
+        <p>You arm it when you walk away. It locks the screen and holds regardless, until the condition you chose. Use it when leaving the machine matters.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What they have in common</h2>
+    <div class="grid c3">
+      <div class="card"><span class="ico">🔌</span><h3>No network</h3><p>None of them ships with the network entitlement. They cannot phone home even by accident.</p></div>
+      <div class="card"><span class="ico">🆓</span><h3>Actually free</h3><p>No trial, no licence key, no upsell. Nothing to sign up for.</p></div>
+      <div class="card"><span class="ico">🪶</span><h3>Menu bar only</h3><p>No Dock icon, no window in your way. Universal binaries for Apple silicon and Intel.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>Free and open source</span>
+    <span class="spacer"></span>
+    <a href="gazefocus/index.html">GazeFocus</a>
+    <a href="wakehold/index.html">WakeHold</a>
+    <a href="afk/index.html">AFK</a>
+  </div>
+</footer>
+
+</body>
+</html>

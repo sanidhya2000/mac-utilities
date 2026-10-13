@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download AFK</title>
+<meta name="description" content="Download AFK free for macOS 14 or later.">
+<link rel="stylesheet" href="site.css">
+<style>:root { --accent: #059669; --accent-soft: #e7f8f1; }
+@media (prefers-color-scheme: dark) { :root { --accent-soft: #0c2219; } }</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="glyph">🔒</span> AFK</a>
+    <nav><a href="index.html#features">Features</a><a href="privacy.html">Privacy</a></nav>
+  </div>
+</header>
+
+<div class="hero wrap" style="padding-bottom:40px">
+  <h1>Download AFK</h1>
+  <p class="lede">Free. No account, no trial, nothing to unlock.</p>
+  <div class="actions">
+    <a class="btn" href="AFK.dmg" download>Download AFK.dmg</a>
+  </div>
+  <p class="meta">Version 1.0.0 · macOS 14 Sonoma or later · Apple silicon &amp; Intel</p>
+</div>
+
+<section>
+  <div class="wrap prose">
+    <h2>Installing</h2>
+    <ol class="steps" style="margin-top:20px">
+      <li><strong>Open the disk image</strong><span>Drag AFK into your Applications folder.</span></li>
+      <li><strong>Open it the first time</strong><span>Right-click the app and choose <em>Open</em>, then confirm.</span></li>
+      <li><strong>Look for it in the menu bar</strong><span>AFK has no Dock icon or main window — it lives in the menu bar.</span></li>
+    </ol>
+
+    <div class="callout" style="margin-top:34px">
+      <strong>macOS will warn you on first launch.</strong>
+      <p>
+        AFK isn't signed with a paid Apple Developer certificate, so Gatekeeper says
+        the developer &ldquo;cannot be verified.&rdquo; This is expected. Right-click the app
+        in Applications, choose <em>Open</em>, and click <em>Open</em> in the dialog — once only.
+      </p>
+      <p>If the dialog won't let you through, open System&nbsp;Settings › Privacy&nbsp;&amp;&nbsp;Security and click <em>Open Anyway</em>.</p>
+    </div>
+
+    <h2>Permissions</h2>
+    <h3>Administrator (optional)</h3>
+    <p>Only if you turn on lid-closed mode. Clearing the clamshell-sleep flag requires root, so macOS asks for your password once. It is reverted automatically when the session ends.</p>
+
+
+    <h2>Checking it works</h2>
+    <p>
+      AFK ships with a built-in diagnostic. In Terminal:
+    </p>
+    <p><code>/Applications/AFK.app/Contents/MacOS/AFK --diagnose</code></p>
+    <p>It prints what the app can see and whether it would act — the quickest way to tell a settings problem from a permissions one.</p>
+
+    <h2>Uninstalling</h2>
+    <p>Quit from the menu bar and drag the app to the Trash. Nothing is left behind outside the standard preferences file.</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>AFK — free and open source</span>
+    <span class="spacer"></span>
+    <a href="index.html">Home</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="../index.html">The suite</a>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GazeFocus — hands-free focus for multi-monitor Macs</title>
+<meta name="description" content="GazeFocus moves keyboard focus to the screen you're looking at, so you can stop clicking before you type. Free, on-device, for macOS.">
+<link rel="stylesheet" href="site.css">
+<style>:root { --accent: #2563eb; }</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="glyph">◎</span> GazeFocus</a>
+    <nav>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="download.html" class="btn small">Download</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero wrap">
+  <span class="pill">Free · macOS 14+</span>
+  <h1>Stop clicking before you type.</h1>
+  <p class="lede">
+    GazeFocus watches which screen you're facing and moves keyboard focus there
+    automatically. Look at the other monitor, start typing — the text lands where
+    you're looking.
+  </p>
+  <div class="actions">
+    <a class="btn" href="download.html">Download for macOS</a>
+    <a class="btn secondary" href="#how">See how it works</a>
+  </div>
+  <p class="meta">Free and open source · Apple silicon &amp; Intel · No account, no tracking</p>
+</div>
+
+<section id="problem">
+  <div class="wrap">
+    <h2>The two-second tax on every monitor you own</h2>
+    <p class="sub">
+      A second display is supposed to save time. But every time you turn to it, macOS
+      leaves focus behind — so you reach for the mouse, hunt for the window, click, and
+      only then start typing. Dozens of times a day.
+    </p>
+    <div class="grid c3">
+      <div class="card">
+        <span class="ico">⌨️</span>
+        <h3>Typing into the void</h3>
+        <p>You start a sentence on the second screen and discover it went into the chat window you left behind.</p>
+      </div>
+      <div class="card">
+        <span class="ico">🖱️</span>
+        <h3>Mouse round-trips</h3>
+        <p>Every switch is a hand off the keyboard, a drag across two or three displays, and a click.</p>
+      </div>
+      <div class="card">
+        <span class="ico">🪟</span>
+        <h3>Wrong window, right screen</h3>
+        <p>Clicking the display isn't enough — you still have to pick out the window you actually wanted.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="sub">
+      Four steps, about two minutes, and then you can forget it's running.
+    </p>
+    <ol class="steps">
+      <li>
+        <strong>Allow the camera</strong>
+        <span>GazeFocus reads the position and angle of your head from the camera you already have. 720p, 15 frames a second.</span>
+      </li>
+      <li>
+        <strong>Allow Accessibility</strong>
+        <span>Moving keyboard focus between other apps' windows is something only macOS Accessibility permission can do.</span>
+      </li>
+      <li>
+        <strong>Calibrate your screens</strong>
+        <span>A dot appears at five places on each display. Look at each one, turning your head toward it. Around twenty seconds per screen.</span>
+      </li>
+      <li>
+        <strong>Just work</strong>
+        <span>Look at a screen and type. GazeFocus keeps getting more accurate as you go, because every click teaches it where you were looking.</span>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="sub">Focus follows your eyes at three levels — screen, window, and split pane.</p>
+    <div class="grid c2">
+      <div class="card">
+        <span class="ico">🖥️</span>
+        <h3>Switches screens</h3>
+        <p>Detects which display you're facing and moves focus there, restoring the window you were last using on that screen rather than whatever happens to be frontmost.</p>
+      </div>
+      <div class="card">
+        <span class="ico">🪟</span>
+        <h3>Switches windows</h3>
+        <p>Works on a single display too — look at a different window on the same screen and focus follows, no click required.</p>
+      </div>
+      <div class="card">
+        <span class="ico">⌗</span>
+        <h3>Focuses split panes</h3>
+        <p>Inside editors and terminals, GazeFocus focuses the individual pane you're reading, not just the window around it.</p>
+      </div>
+      <div class="card">
+        <span class="ico">🎯</span>
+        <h3>Learns as you work</h3>
+        <p>Every click is treated as a hint about where you were looking. Accuracy improves over days of normal use, with no extra calibration.</p>
+      </div>
+      <div class="card">
+        <span class="ico">⏸️</span>
+        <h3>Knows when to stay out of the way</h3>
+        <p>Never switches mid-keystroke. Waits after you stop typing. Stands down while your hand is on the mouse. Ignores quick glances.</p>
+      </div>
+      <div class="card">
+        <span class="ico">📏</span>
+        <h3>Adapts to how you sit</h3>
+        <p>Compensates automatically when you lean in or sit back, and tells you when it's drifted far enough to be worth recalibrating.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:42px;font-size:17px">Split panes work in</h3>
+    <div class="compat">
+      <span>iTerm2</span><span>Terminal</span><span>Ghostty</span><span>Warp</span>
+      <span>kitty</span><span>WezTerm</span><span>Hyper</span><span>VS Code</span>
+      <span>Cursor</span><span>Windsurf</span><span>VSCodium</span><span>Zed</span>
+      <span>Sublime Text</span><span>Xcode</span><span>JetBrains IDEs</span><span>Android Studio</span>
+    </div>
+  </div>
+</section>
+
+<section id="safeguards">
+  <div class="wrap">
+    <h2>Tuned to not annoy you</h2>
+    <p class="sub">
+      An eye-tracking tool that fires too eagerly is worse than no tool at all. Every
+      one of these is adjustable, and the defaults are deliberately cautious.
+    </p>
+    <div class="grid c3">
+      <div class="card"><h3>Settles first</h3><p>A 300 ms rest filters out quick glances, so looking away briefly doesn't move anything.</p></div>
+      <div class="card"><h3>Waits for typing to stop</h3><p>Focus never moves mid-keystroke, nor for ~3 seconds after your last one.</p></div>
+      <div class="card"><h3>Yields to the mouse</h3><p>While you're actively pointing or scrolling, GazeFocus stands down entirely.</p></div>
+      <div class="card"><h3>No edge flicker</h3><p>A margin at each display boundary stops focus bouncing between adjacent screens.</p></div>
+      <div class="card"><h3>Ignores looking away</h3><p>Turn to a colleague or down at paper and nothing happens.</p></div>
+      <div class="card"><h3>Sleeps when you do</h3><p>Releases the camera the moment your Mac locks or sleeps — the camera light goes out.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <h2>Private by design</h2>
+    <p class="sub">The camera is the whole point of the app, so it's worth being precise about what happens to it.</p>
+    <div class="grid c2">
+      <div class="card"><h3>Stays on your Mac</h3><p>Head position is computed with Apple's own Vision framework, locally. Nothing is uploaded.</p></div>
+      <div class="card"><h3>Nothing is stored</h3><p>Frames live in memory for a few milliseconds and are discarded. Nothing is written to disk, ever.</p></div>
+      <div class="card"><h3>No network at all</h3><p>The app ships without the network entitlement — it <em>cannot</em> make a connection, accidentally or otherwise.</p></div>
+      <div class="card"><h3>No account, no analytics</h3><p>There's nothing to sign up for and no telemetry. It's free, so there's nothing to verify either.</p></div>
+    </div>
+    <div class="callout" style="margin-top:20px">
+      <strong>Check it yourself.</strong>
+      <p>The source is public. The entitlements file is four lines long, and network access isn't one of them.</p>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div style="max-width:720px">
+      <details><summary>Is this real eye tracking?</summary>
+        <p>It tracks head pose, not pupils. A webcam can't resolve a pupil accurately enough at desk distance to pick a window — but head angle, combined with where your face sits in the frame, is more than enough to tell which screen you're facing. In practice you turn your head toward another monitor anyway.</p></details>
+      <details><summary>Does it work with one monitor?</summary>
+        <p>Yes. On a single display it focuses the window or split pane you're reading. The gain is smaller than with two or three screens, but it's real.</p></details>
+      <details><summary>What about glasses, beards, hats, dim rooms?</summary>
+        <p>All fine — it's detecting a face, not identifying you. Very low light is the one thing that degrades it, since the camera needs to see you at all. The menu bar icon tells you when it can't.</p></details>
+      <details><summary>Will it fight me when I use the mouse?</summary>
+        <p>No. Any pointer movement stands it down for a moment, and a click is treated as you deciding where focus belongs — it learns from that rather than overriding it.</p></details>
+      <details><summary>How much CPU and battery does it use?</summary>
+        <p>The camera runs at 15 fps on a 720p stream, which is a small fraction of one core. You can pause it any time with ⇧⌘G.</p></details>
+      <details><summary>Do I need to recalibrate often?</summary>
+        <p>Usually never — it learns continuously from your clicks. It does prompt you if you start sitting at a noticeably different distance, and it resets automatically if you rearrange your displays.</p></details>
+      <details><summary>Why does macOS warn me when I open it?</summary>
+        <p>Because it isn't signed with a paid Apple Developer certificate yet. Right-click the app and choose Open the first time. The download page walks through it.</p></details>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap" style="text-align:center">
+    <h2>Try it</h2>
+    <p class="sub" style="margin:0 auto 28px">Free, about two minutes to set up.</p>
+    <a class="btn" href="download.html">Download for macOS</a>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>GazeFocus — free and open source</span>
+    <span class="spacer"></span>
+    <a href="download.html">Download</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="../index.html">The suite</a>
+  </div>
+</footer>
+
+</body>
+</html>
