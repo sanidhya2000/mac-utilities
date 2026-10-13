@@ -5,27 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Three small Mac utilities for people who leave things running</title>
 <meta name="description" content="GazeFocus, WakeHold and AFK — three free macOS menu bar utilities for developers. On-device, no accounts, no tracking.">
+<link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="stylesheet" href="site.css">
 <style>
-:root { --accent: #4f46e5; --accent-soft: #eef0ff; }
-@media (prefers-color-scheme: dark) { :root { --accent-soft: #171634; } }
-.apps { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); }
-@media (max-width: 900px) { .apps { grid-template-columns: 1fr; } }
-.app {
-  border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 26px 24px; background: var(--surface);
-  display: flex; flex-direction: column; text-decoration: none; color: inherit;
-  transition: transform .15s ease, border-color .15s ease;
-}
-.app:hover { transform: translateY(-3px); border-color: var(--tint); }
-.app .mark {
-  width: 50px; height: 50px; border-radius: 13px;
-  display: grid; place-items: center; font-size: 24px; margin-bottom: 16px;
-}
-.app h3 { font-size: 19px; margin: 0 0 4px; font-weight: 650; }
-.app .what { font-size: 14px; color: var(--tint); font-weight: 560; margin: 0 0 11px; }
-.app p.desc { color: var(--muted); font-size: 14.8px; margin: 0 0 18px; flex: 1; }
-.app .go { font-size: 14.5px; font-weight: 560; color: var(--tint); }
+  :root { --accent: #4f46e5; --accent-weak: #eef0ff; }
+  @media (prefers-color-scheme: dark) { :root { --accent-weak: #171630; } }
+
+  /* Three icons fanned out above the headline. */
+  .stack { display: flex; justify-content: center; align-items: flex-end; gap: -10px; margin-bottom: 30px; }
+  .stack img {
+    width: 82px; height: 82px; border-radius: 19px;
+    filter: drop-shadow(0 14px 30px rgba(0,0,0,.26));
+    transition: transform .25s cubic-bezier(.2,.8,.2,1);
+  }
+  .stack img:nth-child(1) { transform: rotate(-9deg) translateX(20px); z-index: 1; }
+  .stack img:nth-child(2) { width: 96px; height: 96px; z-index: 3; }
+  .stack img:nth-child(3) { transform: rotate(9deg) translateX(-20px); z-index: 1; }
+  .stack:hover img:nth-child(1) { transform: rotate(-13deg) translateX(6px); }
+  .stack:hover img:nth-child(3) { transform: rotate(13deg) translateX(-6px); }
+
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 880px) { .pair { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -41,52 +41,97 @@
   </div>
 </header>
 
-<div class="hero wrap">
-  <span class="pill">Free · Open source · macOS 14+</span>
-  <h1>Three small utilities for<br>people who leave things running.</h1>
-  <p class="lede">
-    Menu bar tools that get out of the way. Everything runs on your Mac —
-    no accounts, no telemetry, and not one of them can open a network connection.
-  </p>
+<div class="hero">
+  <div class="wrap">
+    <div class="stack">
+      <img src="img/GazeFocus-256.png" alt="GazeFocus">
+      <img src="img/WakeHold-256.png" alt="WakeHold">
+      <img src="img/AFK-256.png" alt="AFK">
+    </div>
+    <span class="pill"><span class="dot"></span> Free · Open source · macOS 14+</span>
+    <h1>Three small utilities for<br>people who leave things running.</h1>
+    <p class="lede">
+      Menu bar tools that get out of the way. Everything runs on your Mac —
+      no accounts, no telemetry, and not one of them can open a network connection.
+    </p>
+    <div class="actions">
+      <a class="btn" href="#apps">See the apps</a>
+      <a class="btn secondary" href="https://github.com/sanidhya2000/mac-utilities">View source</a>
+    </div>
+  </div>
 </div>
 
-<section style="border-top:none;padding-top:10px">
+<section id="apps" style="border-top:none;padding-top:8px">
   <div class="wrap">
     <div class="apps">
 
       <a class="app" href="gazefocus/index.html" style="--tint:#2563eb">
-        <span class="mark" style="background:#eff4ff;color:#2563eb">◎</span>
+        <img class="mark" src="img/GazeFocus-256.png" alt="">
         <h3>GazeFocus</h3>
         <p class="what">Focus follows your eyes</p>
         <p class="desc">
           Moves keyboard focus to the screen you're looking at, so you stop
           clicking before you type. Works across monitors, windows and split panes.
         </p>
-        <span class="go">Learn more →</span>
+        <span class="go">Learn more <span>→</span></span>
       </a>
 
       <a class="app" href="wakehold/index.html" style="--tint:#d97706">
-        <span class="mark" style="background:#fef5e7;color:#d97706">☕</span>
+        <img class="mark" src="img/WakeHold-256.png" alt="">
         <h3>WakeHold</h3>
         <p class="what">Awake while it works</p>
         <p class="desc">
           Keeps your Mac awake only while something is genuinely busy — a render,
           a build, a download — then lets it sleep. No more guessing timers.
         </p>
-        <span class="go">Learn more →</span>
+        <span class="go">Learn more <span>→</span></span>
       </a>
 
       <a class="app" href="afk/index.html" style="--tint:#059669">
-        <span class="mark" style="background:#e7f8f1;color:#059669">🔒</span>
+        <img class="mark" src="img/AFK-256.png" alt="">
         <h3>AFK</h3>
         <p class="what">Lock the Mac, not the work</p>
         <p class="desc">
           Locks your machine when you step away while your builds, agents and
           uploads keep running behind the lock screen.
         </p>
-        <span class="go">Learn more →</span>
+        <span class="go">Learn more <span>→</span></span>
       </a>
 
+    </div>
+  </div>
+</section>
+
+<section class="sunk">
+  <div class="wrap">
+    <h2>They live in the menu bar</h2>
+    <p class="sub">No Dock icons, no windows in your way. A glance tells you what each one is doing.</p>
+
+    <div class="pair">
+      <div class="menubar">
+        <div class="bar">
+          <img src="img/GazeFocus-128.png" alt="">
+          <img src="img/WakeHold-128.png" alt="">
+          <img src="img/AFK-128.png" alt="">
+          <span>Tue 14:32</span>
+        </div>
+        <div class="body">
+          <div class="row"><span>GazeFocus</span><span class="val">watching P27QD-40</span></div>
+          <div class="row"><span>WakeHold</span><span class="val">awake · ffmpeg working</span></div>
+          <div class="row"><span>AFK</span><span class="val">idle</span></div>
+        </div>
+      </div>
+
+      <div class="grid" style="gap:14px">
+        <div class="card">
+          <h3>Readable at a glance</h3>
+          <p>Each icon changes with state — filled while holding, outlined when idle, a warning when something needs you.</p>
+        </div>
+        <div class="card">
+          <h3>Built-in diagnostics</h3>
+          <p>Every app can explain what it sees from the terminal, so a settings problem never gets mistaken for a permissions one.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -97,10 +142,12 @@
     <p class="sub">They solve adjacent problems and work well together.</p>
     <div class="grid c2">
       <div class="card">
+        <span class="ico" style="background:#fef5e7;color:#d97706">☕</span>
         <h3>WakeHold is automatic</h3>
         <p>Always on in the background, inferring from activity whether to hold sleep. You never think about it. It can let go if a process goes quiet.</p>
       </div>
       <div class="card">
+        <span class="ico" style="background:#e7f8f1;color:#059669">🔒</span>
         <h3>AFK is deliberate</h3>
         <p>You arm it when you walk away. It locks the screen and holds regardless, until the condition you chose. Use it when leaving the machine matters.</p>
       </div>
@@ -108,13 +155,14 @@
   </div>
 </section>
 
-<section>
+<section class="sunk center">
   <div class="wrap">
     <h2>What they have in common</h2>
+    <p class="sub">Three small tools, one set of principles.</p>
     <div class="grid c3">
-      <div class="card"><span class="ico">🔌</span><h3>No network</h3><p>None of them ships with the network entitlement. They cannot phone home even by accident.</p></div>
+      <div class="card"><span class="ico">🔌</span><h3>No network</h3><p>None ships with the network entitlement. macOS itself prevents them from opening a connection.</p></div>
       <div class="card"><span class="ico">🆓</span><h3>Actually free</h3><p>No trial, no licence key, no upsell. Nothing to sign up for.</p></div>
-      <div class="card"><span class="ico">🪶</span><h3>Menu bar only</h3><p>No Dock icon, no window in your way. Universal binaries for Apple silicon and Intel.</p></div>
+      <div class="card"><span class="ico">🪶</span><h3>Light</h3><p>Universal binaries under 1 MB each, idling near zero CPU.</p></div>
     </div>
   </div>
 </section>
@@ -126,6 +174,7 @@
     <a href="gazefocus/index.html">GazeFocus</a>
     <a href="wakehold/index.html">WakeHold</a>
     <a href="afk/index.html">AFK</a>
+    <a href="https://github.com/sanidhya2000/mac-utilities">GitHub</a>
   </div>
 </footer>
 

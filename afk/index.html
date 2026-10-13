@@ -5,15 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AFK — lock the Mac, not the work</title>
 <meta name="description" content="AFK locks your Mac when you step away and keeps your builds, renders and downloads running. Free, on-device, for macOS.">
+<link rel="icon" type="image/png" href="../img/AFK-128.png">
 <link rel="stylesheet" href="site.css">
-<style>:root { --accent: #059669; --accent-soft: #e7f8f1; }
-@media (prefers-color-scheme: dark) { :root { --accent-soft: #0c2219; } }</style>
+<style>:root { --accent: #059669; --accent-weak: #e7f8f1; }
+@media (prefers-color-scheme: dark) { :root { --accent-weak: #0a2219; } }
+.diagram-text { fill: var(--muted); font-family: var(--font); font-size: 13px; }
+.diagram-label { fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600; }
+.diagram-box { fill: var(--surface); stroke: var(--border-strong); stroke-width: 1.5; }
+.diagram-accent { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+</style>
 </head>
 <body>
 
 <header class="site">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="glyph">🔒</span> AFK</a>
+    <a class="brand" href="index.html"><img src="../img/AFK-128.png" alt=""> AFK</a>
     <nav>
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
@@ -23,29 +29,24 @@
   </div>
 </header>
 
-<div class="hero wrap">
-  <span class="pill">Free · macOS 14+</span>
-  <h1>Lock the Mac.<br>Not the work.</h1>
-  <p class="lede">
-    Step away and your machine is locked — nobody can touch it. But your build
-    keeps compiling, your agent keeps running, your upload keeps uploading.
-    One click, then go.
-  </p>
-  <div class="actions">
-    <a class="btn" href="download.html">Download for macOS</a>
-    <a class="btn secondary" href="#how">How it works</a>
+<div class="hero">
+  <div class="wrap">
+    <img class="hero-icon" src="../img/AFK-512.png" alt="AFK">
+    <span class="pill"><span class="dot"></span> Free · macOS 14+</span>
+    <h1>Lock the Mac.<br>Not the work.</h1>
+    <p class="lede">Step away and your machine is locked — nobody can touch it. But your build keeps compiling, your agent keeps running, your upload keeps uploading. One click, then go.</p>
+    <div class="actions">
+      <a class="btn" href="download.html">Download for macOS</a>
+      <a class="btn secondary" href="#how">How it works</a>
+    </div>
+    <p class="meta">Free and open source · No permissions needed · Apple silicon &amp; Intel</p>
   </div>
-  <p class="meta">Free and open source · No permissions needed · Apple silicon &amp; Intel</p>
 </div>
 
-<section id="problem">
+<section id="problem" class="sunk">
   <div class="wrap">
     <h2>Locking your Mac shouldn't pause your work</h2>
-    <p class="sub">
-      You lock the screen and go to lunch. The screen is secure — and forty
-      minutes later the machine quietly idles to sleep, suspending everything
-      you left running.
-    </p>
+    <p class="sub">You lock the screen and go to lunch. The screen is secure — and forty minutes later the machine quietly idles to sleep, suspending everything you left running.</p>
     <div class="grid c3">
       <div class="card"><span class="ico">🧱</span><h3>Builds that didn't</h3><p>You come back to a compile that stopped somewhere in the middle of your break.</p></div>
       <div class="card"><span class="ico">🤖</span><h3>Agents that stalled</h3><p>A long-running agent or test suite frozen mid-task, with an hour wasted.</p></div>
@@ -57,34 +58,61 @@
 <section id="how">
   <div class="wrap">
     <h2>One click, then walk away</h2>
-    <ol class="steps">
+
+<figure class="diagram">
+<svg viewBox="0 0 760 240" role="img" aria-label="Screen locked while work continues, released on unlock">
+  <rect class="diagram-box" x="60" y="40" width="200" height="130" rx="8"/>
+  <text class="diagram-label" x="160" y="100" text-anchor="middle">you</text>
+  <text class="diagram-text" x="160" y="122" text-anchor="middle">click Go AFK</text>
+  <text class="diagram-text" x="160" y="196" text-anchor="middle">0:00</text>
+
+  <rect class="diagram-box" x="300" y="40" width="200" height="130" rx="8"/>
+  <rect x="300" y="40" width="200" height="130" rx="8" fill="var(--accent)" opacity="0.07"/>
+  <circle class="diagram-accent" cx="400" cy="92" r="15"/>
+  <rect class="diagram-accent" x="386" y="92" width="28" height="22" rx="4"/>
+  <text class="diagram-text" x="400" y="140" text-anchor="middle">locked · screen dark</text>
+  <text class="diagram-label" x="400" y="162" text-anchor="middle">work continues</text>
+  <text class="diagram-text" x="400" y="196" text-anchor="middle">42:00</text>
+
+  <rect class="diagram-box" x="540" y="40" width="160" height="130" rx="8"/>
+  <text class="diagram-label" x="620" y="100" text-anchor="middle">you unlock</text>
+  <text class="diagram-text" x="620" y="122" text-anchor="middle">hold released</text>
+  <text class="diagram-text" x="620" y="196" text-anchor="middle">done</text>
+
+  <path class="diagram-accent" stroke-dasharray="5 5" d="M262 105 L296 105"/>
+  <path class="diagram-accent" stroke-dasharray="5 5" d="M502 105 L536 105"/>
+</svg>
+<figcaption>Locked and dark the whole time, while every process keeps its CPU.</figcaption>
+</figure>
+
+    <ol class="steps" style="margin-top:46px">
       <li><strong>Click "Go AFK"</strong><span>Or press ⇧⌘L from anywhere.</span></li>
       <li><strong>It locks and holds</strong><span>Your screen locks immediately and the display goes dark, while system sleep is held open underneath.</span></li>
       <li><strong>Your work carries on</strong><span>Every running process keeps its CPU. Nothing is suspended, nothing is paused.</span></li>
-      <li><strong>You come back</strong><span>Unlock and the hold releases automatically. AFK tells you what ran while you were gone.</span></li>
+      <li><strong>You come back</strong><span>Unlock and the hold releases automatically. It tells you what ran while you were gone.</span></li>
     </ol>
   </div>
 </section>
 
-<section id="features">
+<section id="features" class="sunk">
   <div class="wrap">
     <h2>Three ways to end a session</h2>
     <p class="sub">Pick per session from the menu, or set a default.</p>
     <div class="grid c3">
-      <div class="card"><span class="ico">🔑</span><h3>Until I unlock</h3><p>The default. Holds the whole time you're away and releases the moment you come back. Predictable, and never cuts a job short.</p></div>
-      <div class="card"><span class="ico">✅</span><h3>Until the work finishes</h3><p>Watches what's actually running and releases once everything goes quiet — so the Mac sleeps on its own after the job is done.</p></div>
-      <div class="card"><span class="ico">⏱️</span><h3>For a set time</h3><p>A fixed stretch, when you know roughly how long you'll be.</p></div>
+      <div class="card"><span class="ico">🔑</span><h3>Until I unlock</h3><p>The default. Holds the whole time you are away and releases the moment you come back. Predictable, and never cuts a job short.</p></div>
+      <div class="card"><span class="ico">✅</span><h3>Until the work finishes</h3><p>Watches what is actually running and releases once everything goes quiet — so the Mac sleeps on its own after the job is done.</p></div>
+      <div class="card"><span class="ico">⏱️</span><h3>For a set time</h3><p>A fixed stretch, when you know roughly how long you will be.</p></div>
     </div>
 
-    <h2 style="margin-top:56px">Safety rails</h2>
+    <h2 style="margin-top:62px">Safety rails</h2>
     <p class="sub">A tool that keeps a Mac awake has to be impossible to forget about.</p>
     <div class="grid c2">
-      <div class="card"><h3>Always ends on its own</h3><p>Every session has a hard ceiling you set — twelve hours by default. A forgotten AFK can't keep a machine awake indefinitely.</p></div>
+      <div class="card"><h3>Always ends on its own</h3><p>Every session has a hard ceiling you set — twelve hours by default. A forgotten session cannot keep a machine awake indefinitely.</p></div>
       <div class="card"><h3>Battery floor</h3><p>Refuses to arm, and stands down mid-session, when the battery drops below your threshold. Respects Low Power Mode.</p></div>
-      <div class="card"><h3>Dies safely</h3><p>The hold belongs to the process. If AFK is force-quit or crashes, normal sleep returns immediately on its own.</p></div>
+      <div class="card"><h3>Dies safely</h3><p>The hold belongs to the process. If it is force-quit or crashes, normal sleep returns immediately on its own.</p></div>
       <div class="card"><h3>Tells you what happened</h3><p>Come back to a short summary: how long it held, what was running, and whether anything was still going when it ended.</p></div>
       <div class="card"><h3>Lid closed, optionally</h3><p>Shut the laptop and keep going. One-time admin approval, reverted automatically when the session ends.</p></div>
-      <div class="card"><h3>No permissions</h3><p>No camera, no Accessibility, no screen recording. AFK asks for nothing except admin — and only if you want lid-closed mode.</p></div>
+      <div class="card"><h3>No permissions</h3><p>No camera, no Accessibility, no screen recording. It asks for nothing except admin — and only for lid-closed mode.</p></div>
     </div>
   </div>
 </section>
@@ -92,26 +120,21 @@
 <section id="faq">
   <div class="wrap">
     <h2>Questions</h2>
-    <div style="max-width:720px">
-      <details><summary>How is this different from caffeinate?</summary>
-        <p><code>caffeinate</code> keeps the Mac awake but doesn't lock it, doesn't know when your work is done, and has no safety ceiling. AFK locks first, then holds — and can end itself when the job finishes.</p></details>
-      <details><summary>How is this different from WakeHold?</summary>
-        <p>WakeHold is automatic and always on: it infers from activity whether to hold, and may let go when a process looks idle. AFK is deliberate and session-based — you arm it, it locks, and it holds regardless until the condition you chose. They work well together.</p></details>
-      <details><summary>Is my Mac actually secure while it's armed?</summary>
-        <p>Yes. It uses the same lock macOS uses, so your password is required to get back in. AFK changes nothing about the lock itself — only whether the machine is allowed to fall asleep behind it.</p></details>
-      <details><summary>What if it crashes while holding?</summary>
-        <p>The sleep hold is owned by the process, so it dies with it and normal sleep resumes immediately. The one setting that outlives the app — lid-closed mode — has a watchdog that restores it.</p></details>
-      <details><summary>Will it drain my battery?</summary>
-        <p>It can, since the machine stays awake — that's the point. That's why there's a battery floor and a hard time limit, both on by default.</p></details>
-      <details><summary>Does the screen stay on?</summary>
-        <p>No. The display sleeps immediately. Only system sleep is prevented, so you get a dark, locked machine that's still working.</p></details>
+    <div style="max-width:730px">
+      <details><summary>How is this different from caffeinate?</summary><p><code>caffeinate</code> keeps the Mac awake but does not lock it, does not know when your work is done, and has no safety ceiling. AFK locks first, then holds — and can end itself when the job finishes.</p></details>
+      <details><summary>How is this different from WakeHold?</summary><p>WakeHold is automatic and always on: it infers from activity whether to hold, and may let go when a process looks idle. AFK is deliberate and session-based — you arm it, it locks, and it holds regardless until the condition you chose. They work well together.</p></details>
+      <details><summary>Is my Mac actually secure while it is armed?</summary><p>Yes. It uses the same lock macOS uses, so your password is required to get back in. It changes nothing about the lock itself — only whether the machine may fall asleep behind it.</p></details>
+      <details><summary>What if it crashes while holding?</summary><p>The sleep hold is owned by the process, so it dies with it and normal sleep resumes immediately. The one setting that outlives the app — lid-closed mode — has a watchdog that restores it.</p></details>
+      <details><summary>Will it drain my battery?</summary><p>It can, since the machine stays awake — that is the point. Hence the battery floor and the hard time limit, both on by default.</p></details>
+      <details><summary>Does the screen stay on?</summary><p>No. The display sleeps immediately. Only system sleep is prevented, so you get a dark, locked machine that is still working.</p></details>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="wrap" style="text-align:center">
+<section class="center">
+  <div class="wrap">
     <h2>Go to lunch. Leave it running.</h2>
+    <p class="sub" style="margin:0 auto 30px">Free, and there is nothing to configure.</p>
     <a class="btn" href="download.html">Download for macOS</a>
   </div>
 </section>
@@ -123,6 +146,7 @@
     <a href="download.html">Download</a>
     <a href="privacy.html">Privacy</a>
     <a href="../index.html">The suite</a>
+    <a href="https://github.com/sanidhya2000/mac-utilities">GitHub</a>
   </div>
 </footer>
 

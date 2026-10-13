@@ -5,15 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WakeHold — awake while it works, asleep when it's done</title>
 <meta name="description" content="WakeHold keeps your Mac awake only while something is actually working, then lets it sleep. Free, on-device, for macOS.">
+<link rel="icon" type="image/png" href="../img/WakeHold-128.png">
 <link rel="stylesheet" href="site.css">
-<style>:root { --accent: #d97706; --accent-soft: #fef5e7; }
-@media (prefers-color-scheme: dark) { :root { --accent-soft: #2a1f0d; } }</style>
+<style>:root { --accent: #d97706; --accent-weak: #fef5e7; }
+@media (prefers-color-scheme: dark) { :root { --accent-weak: #2a1f0d; } }
+.diagram-text { fill: var(--muted); font-family: var(--font); font-size: 13px; }
+.diagram-label { fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600; }
+.diagram-box { fill: var(--surface); stroke: var(--border-strong); stroke-width: 1.5; }
+.diagram-accent { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+</style>
 </head>
 <body>
 
 <header class="site">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="glyph">☕</span> WakeHold</a>
+    <a class="brand" href="index.html"><img src="../img/WakeHold-128.png" alt=""> WakeHold</a>
     <nav>
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
@@ -23,32 +29,28 @@
   </div>
 </header>
 
-<div class="hero wrap">
-  <span class="pill">Free · macOS 14+</span>
-  <h1>Awake while it works.<br>Asleep when it's done.</h1>
-  <p class="lede">
-    Your Mac shouldn't sleep through a render, a build, or a long download —
-    and it shouldn't stay awake all night afterwards either. WakeHold watches
-    what's actually running and decides for you.
-  </p>
-  <div class="actions">
-    <a class="btn" href="download.html">Download for macOS</a>
-    <a class="btn secondary" href="#how">How it decides</a>
+<div class="hero">
+  <div class="wrap">
+    <img class="hero-icon" src="../img/WakeHold-512.png" alt="WakeHold">
+    <span class="pill"><span class="dot"></span> Free · macOS 14+</span>
+    <h1>Awake while it works.<br>Asleep when it's done.</h1>
+    <p class="lede">Your Mac shouldn't sleep through a render, a build, or a long download — and it shouldn't stay awake all night afterwards either. WakeHold watches what's actually running and decides for you.</p>
+    <div class="actions">
+      <a class="btn" href="download.html">Download for macOS</a>
+      <a class="btn secondary" href="#how">How it works</a>
+    </div>
+    <p class="meta">Free and open source · Apple silicon &amp; Intel · No account, no tracking</p>
   </div>
-  <p class="meta">Free and open source · Apple silicon &amp; Intel · No account, no tracking</p>
 </div>
 
-<section id="problem">
+<section id="problem" class="sunk">
   <div class="wrap">
     <h2>Caffeinate is a blunt instrument</h2>
-    <p class="sub">
-      The usual options are "never sleep" and "sleep on a timer". Neither knows
-      whether your export finished ten minutes ago or is still going.
-    </p>
+    <p class="sub">The usual options are "never sleep" and "sleep on a timer". Neither knows whether your export finished ten minutes ago or is still going.</p>
     <div class="grid c3">
       <div class="card"><span class="ico">😴</span><h3>Slept mid-job</h3><p>You come back to a render that stopped at 40% because the idle timer won.</p></div>
       <div class="card"><span class="ico">🔋</span><h3>Awake for nothing</h3><p>You left caffeinate running on Friday and found a flat battery on Monday.</p></div>
-      <div class="card"><span class="ico">🤷</span><h3>Guessing timers</h3><p>"Sleep after 3 hours" is a guess that's wrong in both directions.</p></div>
+      <div class="card"><span class="ico">🤷</span><h3>Guessing timers</h3><p>"Sleep after 3 hours" is a guess that is wrong in both directions.</p></div>
     </div>
   </div>
 </section>
@@ -57,28 +59,54 @@
   <div class="wrap">
     <h2>How it decides</h2>
     <p class="sub">The same counters Activity Monitor shows, read a few times a minute.</p>
-    <ol class="steps">
+
+<figure class="diagram">
+<svg viewBox="0 0 760 230" role="img" aria-label="Activity over time: sleep held only while work is sustained">
+  <line x1="60" y1="170" x2="710" y2="170" stroke="var(--border-strong)" stroke-width="1.5"/>
+
+  <!-- brief spike, correctly ignored -->
+  <path class="diagram-accent" d="M90 170 L108 92 L126 170"/>
+  <text class="diagram-text" x="108" y="196" text-anchor="middle">brief spike</text>
+  <text class="diagram-text" x="108" y="212" text-anchor="middle" fill="var(--muted)">ignored</text>
+
+  <!-- sustained work -->
+  <path class="diagram-accent" d="M230 170 L250 80 L420 80 L440 170"/>
+  <rect x="230" y="60" width="210" height="130" rx="7" fill="var(--accent)" opacity="0.08"/>
+  <text class="diagram-text" x="335" y="196" text-anchor="middle">sustained work</text>
+  <text class="diagram-label" x="335" y="50" text-anchor="middle">awake</text>
+
+  <!-- grace period then sleep -->
+  <rect x="440" y="60" width="110" height="130" rx="7" fill="var(--accent)" opacity="0.04"/>
+  <text class="diagram-text" x="495" y="196" text-anchor="middle">grace</text>
+  <text class="diagram-text" x="640" y="196" text-anchor="middle">idle</text>
+  <text class="diagram-label" x="640" y="50" text-anchor="middle">asleep</text>
+  <line x1="550" y1="60" x2="550" y2="190" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="5 5"/>
+</svg>
+<figcaption>A spike is not work. Sustained activity holds sleep; a grace period rides over the gaps.</figcaption>
+</figure>
+
+    <ol class="steps" style="margin-top:46px">
       <li><strong>Samples every process</strong><span>CPU, disk and network per app — the real numbers, straight from the system.</span></li>
-      <li><strong>Ignores brief spikes</strong><span>Opening a file or loading a page doesn't count. Work has to persist before it registers.</span></li>
-      <li><strong>Trusts apps that ask</strong><span>Browsers and editors raise their own "don't sleep" signal during downloads and exports. WakeHold honours it.</span></li>
-      <li><strong>Waits, then lets go</strong><span>When everything goes quiet it waits out a grace period — so a gap between build steps doesn't drop the hold — then allows sleep.</span></li>
+      <li><strong>Ignores brief spikes</strong><span>Opening a file or loading a page does not count. Work has to persist before it registers.</span></li>
+      <li><strong>Trusts apps that ask</strong><span>Browsers and editors raise their own "don't sleep" signal during downloads and exports. It honours them.</span></li>
+      <li><strong>Waits, then lets go</strong><span>When everything goes quiet it waits out a grace period — so a gap between build steps does not drop the hold — then allows sleep.</span></li>
     </ol>
   </div>
 </section>
 
-<section id="features">
+<section id="features" class="sunk">
   <div class="wrap">
     <h2>What it handles</h2>
     <div class="grid c2">
-      <div class="card"><span class="ico">🎬</span><h3>Knows your tools</h3><p>Recognises 38 apps across video, downloads, AI agents, development and sync — each with sensible thresholds. Anything unknown still counts if it's genuinely busy.</p></div>
-      <div class="card"><span class="ico">💻</span><h3>Works with the lid closed</h3><p>One-time admin approval, and a watchdog that restores normal sleep within seconds if WakeHold ever stops.</p></div>
+      <div class="card"><span class="ico">🎬</span><h3>Knows your tools</h3><p>Recognises 38 apps across video, downloads, AI agents, development and sync, each with sensible thresholds. Anything unknown still counts if it is genuinely busy.</p></div>
+      <div class="card"><span class="ico">🎚️</span><h3>You choose what counts</h3><p>Two lists — staying awake for, and not watching. Click any app to move it between them. A VM that is always busy never holds your Mac awake again.</p></div>
+      <div class="card"><span class="ico">💻</span><h3>Works with the lid closed</h3><p>One-time admin approval, and a watchdog that restores normal sleep within seconds if it ever stops.</p></div>
       <div class="card"><span class="ico">🔋</span><h3>Battery aware</h3><p>Stops holding below a threshold you set, and respects Low Power Mode. Never applies to desktops.</p></div>
-      <div class="card"><span class="ico">🌙</span><h3>Lets the screen sleep</h3><p>Only system sleep is held. Your display still goes dark on its own schedule — unless you'd rather it didn't.</p></div>
-      <div class="card"><span class="ico">🙈</span><h3>Ignore anything</h3><p>A VM or sync client that's always busy would hold forever. Click it in the menu to stop watching it.</p></div>
-      <div class="card"><span class="ico">🪶</span><h3>Barely there</h3><p>Well under 1% of one core. It's reading counters, not doing work.</p></div>
+      <div class="card"><span class="ico">🌙</span><h3>Lets the screen sleep</h3><p>Only system sleep is held. Your display still goes dark on its own schedule — unless you would rather it did not.</p></div>
+      <div class="card"><span class="ico">🪶</span><h3>Barely there</h3><p>Well under 1% of one core. It is reading counters, not doing work.</p></div>
     </div>
 
-    <h3 style="margin-top:42px;font-size:17px">Recognises, among others</h3>
+    <h3 style="margin-top:48px;font-size:17px">Recognises, among others</h3>
     <div class="compat">
       <span>Final Cut Pro</span><span>Premiere Pro</span><span>DaVinci Resolve</span><span>Logic Pro</span>
       <span>ffmpeg</span><span>HandBrake</span><span>Chrome</span><span>Safari</span><span>Arc</span>
@@ -95,17 +123,17 @@
     <p class="sub">Only activity counters — the same numbers Activity Monitor displays.</p>
     <div class="grid c2">
       <div class="card"><h3>Not your content</h3><p>It reads how much CPU, disk and network each process used. Not what any of them were doing.</p></div>
-      <div class="card"><h3>No network</h3><p>Ships without the network entitlement. It cannot make a connection even by accident.</p></div>
-      <div class="card"><h3>No account</h3><p>Nothing to sign up for, nothing to verify. It's free.</p></div>
+      <div class="card"><h3>No network</h3><p>Ships without the network entitlement. It cannot open a connection even by accident.</p></div>
+      <div class="card"><h3>No account</h3><p>Nothing to sign up for, nothing to verify. It is free.</p></div>
       <div class="card"><h3>No analytics</h3><p>No telemetry, no crash reporting, no update pings.</p></div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="wrap" style="text-align:center">
+<section class="center">
+  <div class="wrap">
     <h2>Stop guessing timers</h2>
-    <p class="sub" style="margin:0 auto 28px">Install it and forget it's there.</p>
+    <p class="sub" style="margin:0 auto 30px">Install it and forget it is there.</p>
     <a class="btn" href="download.html">Download for macOS</a>
   </div>
 </section>
@@ -117,6 +145,7 @@
     <a href="download.html">Download</a>
     <a href="privacy.html">Privacy</a>
     <a href="../index.html">The suite</a>
+    <a href="https://github.com/sanidhya2000/mac-utilities">GitHub</a>
   </div>
 </footer>
 
