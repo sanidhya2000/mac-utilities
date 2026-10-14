@@ -8,6 +8,7 @@
 <link rel="icon" type="image/png" href="../img/AFK-128.png">
 <link rel="stylesheet" href="site.css">
 <style>:root { --accent: #059669; --accent-weak: #e7f8f1; }
+:root { --accent-2: #10b981; --accent-3: #0891b2; }
 @media (prefers-color-scheme: dark) { :root { --accent-weak: #0a2219; } }
 .diagram-text { fill: var(--muted); font-family: var(--font); font-size: 13px; }
 .diagram-label { fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600; }
@@ -30,10 +31,12 @@
 </header>
 
 <div class="hero">
+  <div class="aurora"><span></span><span></span><span></span></div>
+  <div class="gridlines"></div>
   <div class="wrap">
     <img class="hero-icon" src="../img/AFK-512.png" alt="AFK">
     <span class="pill"><span class="dot"></span> Free · macOS 14+</span>
-    <h1>Lock the Mac.<br>Not the work.</h1>
+    <h1>Lock the Mac.<br><span class="grad">Not the work.</span></h1>
     <p class="lede">Step away and your machine is locked — nobody can touch it. But your build keeps compiling, your agent keeps running, your upload keeps uploading. One click, then go.</p>
     <div class="actions">
       <a class="btn" href="download.html">Download for macOS</a>
@@ -48,9 +51,9 @@
     <h2>Locking your Mac shouldn't pause your work</h2>
     <p class="sub">You lock the screen and go to lunch. The screen is secure — and forty minutes later the machine quietly idles to sleep, suspending everything you left running.</p>
     <div class="grid c3">
-      <div class="card"><span class="ico">🧱</span><h3>Builds that didn't</h3><p>You come back to a compile that stopped somewhere in the middle of your break.</p></div>
-      <div class="card"><span class="ico">🤖</span><h3>Agents that stalled</h3><p>A long-running agent or test suite frozen mid-task, with an hour wasted.</p></div>
-      <div class="card"><span class="ico">🔓</span><h3>Or you don't lock at all</h3><p>So you leave it unlocked instead — and now anyone walking past has your machine.</p></div>
+      <div class="card reveal"><span class="ico">🧱</span><h3>Builds that didn't</h3><p>You come back to a compile that stopped somewhere in the middle of your break.</p></div>
+      <div class="card reveal"><span class="ico">🤖</span><h3>Agents that stalled</h3><p>A long-running agent or test suite frozen mid-task, with an hour wasted.</p></div>
+      <div class="card reveal"><span class="ico">🔓</span><h3>Or you don't lock at all</h3><p>So you leave it unlocked instead — and now anyone walking past has your machine.</p></div>
     </div>
   </div>
 </section>
@@ -99,20 +102,20 @@
     <h2>Three ways to end a session</h2>
     <p class="sub">Pick per session from the menu, or set a default.</p>
     <div class="grid c3">
-      <div class="card"><span class="ico">🔑</span><h3>Until I unlock</h3><p>The default. Holds the whole time you are away and releases the moment you come back. Predictable, and never cuts a job short.</p></div>
-      <div class="card"><span class="ico">✅</span><h3>Until the work finishes</h3><p>Watches what is actually running and releases once everything goes quiet — so the Mac sleeps on its own after the job is done.</p></div>
-      <div class="card"><span class="ico">⏱️</span><h3>For a set time</h3><p>A fixed stretch, when you know roughly how long you will be.</p></div>
+      <div class="card reveal"><span class="ico">🔑</span><h3>Until I unlock</h3><p>The default. Holds the whole time you are away and releases the moment you come back. Predictable, and never cuts a job short.</p></div>
+      <div class="card reveal"><span class="ico">✅</span><h3>Until the work finishes</h3><p>Watches what is actually running and releases once everything goes quiet — so the Mac sleeps on its own after the job is done.</p></div>
+      <div class="card reveal"><span class="ico">⏱️</span><h3>For a set time</h3><p>A fixed stretch, when you know roughly how long you will be.</p></div>
     </div>
 
     <h2 style="margin-top:62px">Safety rails</h2>
     <p class="sub">A tool that keeps a Mac awake has to be impossible to forget about.</p>
     <div class="grid c2">
-      <div class="card"><h3>Always ends on its own</h3><p>Every session has a hard ceiling you set — twelve hours by default. A forgotten session cannot keep a machine awake indefinitely.</p></div>
-      <div class="card"><h3>Battery floor</h3><p>Refuses to arm, and stands down mid-session, when the battery drops below your threshold. Respects Low Power Mode.</p></div>
-      <div class="card"><h3>Dies safely</h3><p>The hold belongs to the process. If it is force-quit or crashes, normal sleep returns immediately on its own.</p></div>
-      <div class="card"><h3>Tells you what happened</h3><p>Come back to a short summary: how long it held, what was running, and whether anything was still going when it ended.</p></div>
-      <div class="card"><h3>Lid closed, optionally</h3><p>Shut the laptop and keep going. One-time admin approval, reverted automatically when the session ends.</p></div>
-      <div class="card"><h3>No permissions</h3><p>No camera, no Accessibility, no screen recording. It asks for nothing except admin — and only for lid-closed mode.</p></div>
+      <div class="card reveal"><h3>Always ends on its own</h3><p>Every session has a hard ceiling you set — twelve hours by default. A forgotten session cannot keep a machine awake indefinitely.</p></div>
+      <div class="card reveal"><h3>Battery floor</h3><p>Refuses to arm, and stands down mid-session, when the battery drops below your threshold. Respects Low Power Mode.</p></div>
+      <div class="card reveal"><h3>Dies safely</h3><p>The hold belongs to the process. If it is force-quit or crashes, normal sleep returns immediately on its own.</p></div>
+      <div class="card reveal"><h3>Tells you what happened</h3><p>Come back to a short summary: how long it held, what was running, and whether anything was still going when it ended.</p></div>
+      <div class="card reveal"><h3>Lid closed, optionally</h3><p>Shut the laptop and keep going. One-time admin approval, reverted automatically when the session ends.</p></div>
+      <div class="card reveal"><h3>No permissions</h3><p>No camera, no Accessibility, no screen recording. It asks for nothing except admin — and only for lid-closed mode.</p></div>
     </div>
   </div>
 </section>
@@ -150,5 +153,13 @@
   </div>
 </footer>
 
+<script>
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  } else { document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')); }
+</script>
 </body>
 </html>

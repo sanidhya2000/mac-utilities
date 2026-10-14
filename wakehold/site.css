@@ -332,3 +332,120 @@ footer.site .spacer { margin-left: auto; }
 .notice ul { margin: 10px 0 0; padding-left: 20px; }
 .notice li { font-size: 15px; color: var(--text-soft); margin-bottom: 5px; }
 .notice .ok { color: var(--text); font-weight: 560; }
+
+/* ═══════════════════════════════════════════════════════════════
+   Visual layer: ambient gradients, texture, glass, motion.
+   All self-contained — GitHub Pages serves no external assets.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── animated aurora behind the hero ────────────────────────────
+   Three slow-drifting blobs. Pure CSS so there is no JS cost and
+   it degrades to a static wash if animations are disabled.      */
+.aurora {
+  position: absolute; inset: -220px 0 auto 0; height: 760px;
+  z-index: -2; pointer-events: none; overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+          mask-image: linear-gradient(180deg, #000 55%, transparent);
+}
+.aurora span {
+  position: absolute; display: block; border-radius: 50%;
+  filter: blur(70px); opacity: .5;
+  animation: drift 22s ease-in-out infinite;
+}
+.aurora span:nth-child(1) {
+  width: 560px; height: 420px; left: 8%; top: 6%;
+  background: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.aurora span:nth-child(2) {
+  width: 480px; height: 460px; right: 6%; top: 0;
+  background: color-mix(in srgb, var(--accent-2, var(--accent)) 48%, transparent);
+  animation-delay: -7s; animation-duration: 27s;
+}
+.aurora span:nth-child(3) {
+  width: 420px; height: 340px; left: 42%; top: 28%;
+  background: color-mix(in srgb, var(--accent-3, var(--accent)) 40%, transparent);
+  animation-delay: -14s; animation-duration: 31s;
+}
+@media (prefers-color-scheme: dark) { .aurora span { opacity: .34; filter: blur(84px); } }
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33%      { transform: translate3d(40px, 26px, 0) scale(1.1); }
+  66%      { transform: translate3d(-32px, 14px, 0) scale(.94); }
+}
+
+/* ── faint grid, so the background is not flat ──────────────── */
+.gridlines {
+  position: absolute; inset: 0; z-index: -3; pointer-events: none;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 52% at 50% 26%, #000, transparent 76%);
+          mask-image: radial-gradient(ellipse 70% 52% at 50% 26%, #000, transparent 76%);
+}
+
+/* ── gradient headline accent ───────────────────────────────── */
+.grad {
+  background: linear-gradient(104deg, var(--accent), var(--accent-2, var(--accent)) 58%, var(--accent-3, var(--accent)));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+
+/* ── glassy cards with a hover glow ─────────────────────────── */
+.card, .app, figure.diagram, .menubar, details {
+  position: relative;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.app::before, .card::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  padding: 1px; pointer-events: none; opacity: 0;
+  background: linear-gradient(140deg, color-mix(in srgb, var(--tint, var(--accent)) 55%, transparent), transparent 55%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  transition: opacity .22s ease;
+}
+.app:hover::before, .card:hover::before { opacity: 1; }
+
+/* ── icon glow ──────────────────────────────────────────────── */
+.app img.mark, .hero-icon { transition: transform .22s cubic-bezier(.2,.8,.2,1), filter .22s ease; }
+.app:hover img.mark { transform: translateY(-3px) scale(1.04); }
+
+/* ── scroll reveal ──────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(16px); }
+.reveal.in { opacity: 1; transform: none; transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
+.reveal:nth-child(2) { transition-delay: .06s; }
+.reveal:nth-child(3) { transition-delay: .12s; }
+
+/* ── live dot for the menu bar mockup ───────────────────────── */
+.livedot {
+  width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34,197,94,.6); animation: pulse 2.1s infinite;
+  display: inline-block; margin-right: 6px;
+}
+@keyframes pulse {
+  70%  { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+/* ── scrolling marquee of supported apps ────────────────────── */
+.marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+           mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee .track { display: flex; gap: 8px; width: max-content; animation: slide 46s linear infinite; }
+.marquee:hover .track { animation-play-state: paused; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* ── "coming soon" treatment ────────────────────────────────── */
+.app.soon { opacity: .78; }
+.app.soon:hover { opacity: 1; }
+.badge.soon {
+  background: color-mix(in srgb, var(--muted) 16%, transparent);
+  color: var(--muted);
+  border-color: color-mix(in srgb, var(--muted) 30%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora span, .livedot, .marquee .track { animation: none; }
+  .reveal { opacity: 1; transform: none; }
+}
