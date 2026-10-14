@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import AVFoundation
 import GazeCore
 
@@ -20,6 +21,21 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            // Duplicated from the menu on purpose: the menu bar icon is not
+            // always reachable, and an app you cannot turn off is a trap.
+            Section {
+                HStack {
+                    Button(engine.isPaused ? "Resume Tracking" : "Pause Tracking") {
+                        engine.isPaused.toggle()
+                    }
+                    Spacer()
+                    Button("Quit GazeFocus") { NSApp.terminate(nil) }
+                }
+                LabeledContent("Status") {
+                    Text(statusText).foregroundStyle(.secondary)
+                }
+            }
+
             Section("Switching") {
                 slider("Settle before switching", value: $settle, range: 0...1500, step: 50,
                        format: { "\(Int($0)) ms" }) { Prefs.shared.settleMilliseconds = Int($0) }
@@ -72,7 +88,7 @@ struct SettingsView: View {
                     Button("Recalibrate…", action: onRecalibrate)
                         .disabled(calibration.isRunning)
                     Button("Reset Learning") {
-                        CalibrationStore.shared.clear()
+                        CalibrationStore.shared.clearCurrentLayout()
                         engine.recalibrated()
                     }
                 }
@@ -98,6 +114,18 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .frame(width: 500, height: 620)
+    }
+
+    private var statusText: String {
+        switch engine.status {
+        case .needsCamera:        return "camera access needed"
+        case .needsAccessibility: return "accessibility access needed"
+        case .needsCalibration:   return "not calibrated for this display setup"
+        case .paused:             return "paused"
+        case .noFace:             return "can't see you"
+        case .waiting(let why):   return "holding — \(why)"
+        case .tracking(let name): return "watching \(name)"
+        }
     }
 
     private func slider(_ title: String, value: Binding<Double>,

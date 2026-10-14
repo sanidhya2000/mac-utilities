@@ -43,16 +43,22 @@ public enum ScreenGeometry {
     /// anything seen during calibration can predict a coordinate well outside
     /// every screen. Left alone that coordinate is useless for picking a window
     /// or a pane — clamping turns it back into the most plausible real point.
-    public static func clamp(_ point: CGPoint, to frames: [CGRect]) -> CGPoint {
+    /// `inset` must clear any edge band the caller applies afterwards. Clamping
+    /// flush to the boundary would otherwise land every corrected point inside
+    /// the anti-flicker margin, where switching is suppressed — which silently
+    /// disables focus switching entirely for anyone whose fit extrapolates.
+    public static func clamp(_ point: CGPoint, to frames: [CGRect], inset: CGFloat = 1) -> CGPoint {
         // A point already on a display needs no adjustment.
         if frames.contains(where: { $0.contains(point) }) { return point }
         guard let index = nearestFrame(to: point, in: frames) else { return point }
 
         let frame = frames[index]
-        // Inset by a pixel so the result is strictly inside, not on the edge,
-        // where hit-testing would be ambiguous again.
-        return CGPoint(x: min(max(point.x, frame.minX + 1), frame.maxX - 1),
-                       y: min(max(point.y, frame.minY + 1), frame.maxY - 1))
+        // Never inset past the middle of a small display.
+        let safeX = min(inset, frame.width / 2 - 1)
+        let safeY = min(inset, frame.height / 2 - 1)
+
+        return CGPoint(x: min(max(point.x, frame.minX + safeX), frame.maxX - safeX),
+                       y: min(max(point.y, frame.minY + safeY), frame.maxY - safeY))
     }
 
     /// Whether a point sits within `margin` of a frame's left or right edge,

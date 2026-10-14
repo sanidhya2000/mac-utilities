@@ -46,6 +46,8 @@ final class GazeEngine: ObservableObject {
 
     /// Currently focused screen, so unchanged gaze does no work.
     private var activeScreenKey: String?
+    /// The screen focus was on before the current one, for hysteresis.
+    private var previousScreenKey: String?
 
     private var lastPaneSwitch = Date.distantPast
     private var lastPose: HeadPose?
@@ -202,7 +204,11 @@ final class GazeEngine: ObservableObject {
         // further than anything seen during calibration can predict a point off
         // every display. Clamping keeps it usable for window and pane targeting.
         let screenFrames = NSScreen.screens.map(FocusSwitcher.globalFrame(of:))
-        let predicted = ScreenGeometry.clamp(model.predict(pose.features), to: screenFrames)
+        // Clear the edge band, or the guard below would reject every point the
+        // clamp had to correct.
+        let predicted = ScreenGeometry.clamp(model.predict(pose.features),
+                                             to: screenFrames,
+                                             inset: Prefs.shared.edgeMargin + 8)
         gazePoint = predicted
 
         // System state first: these are the cases where the user is visibly
@@ -213,7 +219,12 @@ final class GazeEngine: ObservableObject {
             return
         }
 
-        if guards.isTyping {
+        // Typing suppresses pane switching outright, but only *delays* screen
+        // switching. Looking at another monitor and carrying on typing is the
+        // case this app exists for; freezing entirely would defeat it. Panes
+        // are different — a glance across a split to read something must never
+        // take your keystrokes.
+        if guards.isTyping && guards.isMidSentence {
             candidateSince = nil
             status = .waiting(reason: "typing")
             return
@@ -242,10 +253,14 @@ final class GazeEngine: ObservableObject {
 
         // Inside the edge band the choice of screen is ambiguous; holding still
         // here is what prevents flicker between adjacent displays.
-        let margin = Prefs.shared.edgeMargin
+        // Bezel hysteresis: coming back to the screen just left demands a
+        // larger commitment than leaving it did. Without the asymmetry, a gaze
+        // resting near a boundary oscillates between two displays.
+        let returning = screenKey == previousScreenKey && screenKey != activeScreenKey
+        let margin = Prefs.shared.edgeMargin * (returning ? 2.2 : 1)
         let inEdgeBand = ScreenGeometry.isNearVerticalEdge(gaze, of: frame, margin: margin)
         if inEdgeBand && screenKey != activeScreenKey {
-            status = .waiting(reason: "near screen edge")
+            status = .waiting(reason: returning ? "settling back" : "near screen edge")
             return
         }
 
@@ -261,6 +276,9 @@ final class GazeEngine: ObservableObject {
         // already looking rather than in the window they copied from.
         var settle = Double(Prefs.shared.settleMilliseconds) / 1000
         if guards.expectsPaste { settle = min(settle, 0.12) }
+        // "Switches after a beat" — a longer rest is required to move screens
+        // mid-typing than when the keyboard is idle.
+        if guards.isTyping { settle = max(settle, 0.75) }
 
         guard let since = candidateSince, Date().timeIntervalSince(since) >= settle else { return }
 
@@ -276,6 +294,7 @@ final class GazeEngine: ObservableObject {
     private func switchScreen(to screen: NSScreen, gaze: CGPoint) {
         guard let window = switcher.focus(on: screen, gazePoint: gaze) else { return }
         guards.noteOwnCursorWarp()
+        previousScreenKey = activeScreenKey
         activeScreenKey = FocusSwitcher.key(for: screen)
         panes.reset()
         lastPaneSwitch = Date()
@@ -284,6 +303,8 @@ final class GazeEngine: ObservableObject {
 
     /// Within the same screen, move between windows and split panes.
     private func maybeSwitchPane(gaze: CGPoint) {
+        // Panes never move while typing, at any delay.
+        guard !guards.isTyping else { return }
         let delay = Double(Prefs.shared.paneDelayMilliseconds) / 1000
         guard Date().timeIntervalSince(lastPaneSwitch) >= delay else { return }
 
@@ -407,8 +428,18 @@ final class GazeEngine: ObservableObject {
             object: nil, queue: .main
         ) { [weak self] _ in
             Task { @MainActor in
-                self?.activeScreenKey = nil
-                self?.refreshStatus()
+                guard let self else { return }
+                self.activeScreenKey = nil
+                // Plugging a monitor in or out selects a different profile;
+                // the one for the old arrangement is meaningless now.
+                let restored = self.store.activateCurrentLayout()
+                self.fitError = self.store.model?.meanError
+                self.driftSamples.removeAll()
+                Log.info(restored
+                         ? "displays changed — restored calibration for this layout"
+                         : "displays changed — no calibration for this layout")
+                self.refreshStatus()
+                self.reconcilePermissions()
             }
         }
     }

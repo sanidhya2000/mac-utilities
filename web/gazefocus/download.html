@@ -25,12 +25,12 @@
 </header>
 
 <div class="hero wrap" style="padding-bottom:40px">
-  <h1>Download GazeFocus</h1>
-  <p class="lede">Free. No account, no trial, nothing to unlock.</p>
+  <h1>Download the GazeFocus pilot</h1>
+  <p class="lede">Free and unlocked — but early. Accuracy varies a lot with where your camera sits.</p>
   <div class="actions">
-    <a class="btn" href="GazeFocus.dmg" download>Download GazeFocus.dmg</a>
+    <a class="btn secondary" href="GazeFocus.dmg" download>Download GazeFocus.dmg</a>
   </div>
-  <p class="meta">Version 1.0.0 · macOS 14 Sonoma or later · Apple silicon &amp; Intel</p>
+  <p class="meta">Pilot 1.0.0 · macOS 14 Sonoma or later · Apple silicon &amp; Intel</p>
 </div>
 
 <section>
@@ -70,6 +70,22 @@
       System&nbsp;Settings › Privacy&nbsp;&amp;&nbsp;Security › Accessibility to tick
       the box.
     </p>
+
+
+    <div class="callout" style="margin-top:34px">
+      <strong>Check how it does on your setup.</strong>
+      <p>
+        Two built-in commands report honestly rather than making you guess:
+      </p>
+      <p><code>/Applications/GazeFocus.app/Contents/MacOS/GazeFocus --diagnose</code></p>
+      <p><code>/Applications/GazeFocus.app/Contents/MacOS/GazeFocus --probe-camera 8</code></p>
+      <p>
+        The probe counts frames and faces and prints the gaze point it predicts.
+        A calibration error under about 250&nbsp;points means it should feel
+        good; far above that and the camera is likely in an awkward spot for
+        your screen layout.
+      </p>
+    </div>
 
     <h2>Uninstalling</h2>
     <p>

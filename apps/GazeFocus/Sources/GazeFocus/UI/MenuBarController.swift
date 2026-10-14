@@ -68,7 +68,13 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         switch status {
         case .needsCamera:        return "Camera access needed"
         case .needsAccessibility: return "Accessibility access needed"
-        case .needsCalibration:   return "Not calibrated yet"
+        case .needsCalibration:
+            // Naming the arrangement matters: plugging a monitor in or out is
+            // the usual reason this appears, and "not calibrated yet" reads
+            // like the app forgot everything.
+            return CalibrationStore.shared.otherProfileCount > 0
+                ? "Not calibrated for this display setup"
+                : "Not calibrated yet"
         case .paused:             return "Paused"
         case .noFace:             return "Can't see you"
         case .waiting(let why):   return "Holding — \(why)"
@@ -88,6 +94,15 @@ final class MenuBarController: NSObject, NSMenuDelegate {
 
         switch engine.status {
         case .needsCamera, .needsAccessibility, .needsCalibration:
+            if case .needsCalibration = engine.status,
+               CalibrationStore.shared.otherProfileCount > 0 {
+                let note = NSMenuItem(
+                    title: "  \(NSScreen.screens.count) display\(NSScreen.screens.count == 1 ? "" : "s") connected",
+                    action: nil, keyEquivalent: "")
+                note.isEnabled = false
+                menu.addItem(note)
+            }
+
             let setup = NSMenuItem(title: "Finish Setup…", action: #selector(openOnboarding), keyEquivalent: "")
             setup.target = self
             menu.addItem(setup)
@@ -140,6 +155,17 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     @objc private func togglePause() { engine.isPaused.toggle() }
 
     @objc private func relaunchApp() { Relaunch.now() }
+
+    /// Brings the app's controls on screen regardless of whether its menu bar
+    /// icon is reachable.
+    func revealControls() {
+        switch engine.status {
+        case .needsCamera, .needsAccessibility, .needsCalibration:
+            openOnboarding()
+        default:
+            openSettings()
+        }
+    }
 
     @objc private func toggleDot() {
         Prefs.shared.showGazeDot.toggle()

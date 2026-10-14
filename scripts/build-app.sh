@@ -26,7 +26,13 @@ ARCH_BINARIES=()
 for TRIPLE in arm64-apple-macosx14.0 x86_64-apple-macosx14.0; do
   echo "    compiling $TRIPLE"
   SCRATCH="$SRC/.build/$TRIPLE"
-  swift build -c release --triple "$TRIPLE" --scratch-path "$SCRATCH" > /dev/null
+  # Errors must surface. Discarding this output once hid two failed builds,
+  # which then looked like changes that simply had no effect.
+  if ! BUILD_LOG="$(swift build -c release --triple "$TRIPLE" --scratch-path "$SCRATCH" 2>&1)"; then
+    echo "$BUILD_LOG" | grep -E "error:" -A3 || echo "$BUILD_LOG" | tail -20
+    echo "BUILD FAILED for $TRIPLE"
+    exit 1
+  fi
   ARCH_BIN="$(swift build -c release --triple "$TRIPLE" --scratch-path "$SCRATCH" --show-bin-path)/$APP_NAME"
   [ -f "$ARCH_BIN" ] || { echo "no binary for $TRIPLE at $ARCH_BIN"; exit 1; }
   ARCH_BINARIES+=("$ARCH_BIN")
@@ -56,7 +62,21 @@ echo "APPL????" > "$OUT/Contents/PkgInfo"
 
 # Ad-hoc signature. A Developer ID identity, when available, is picked up from
 # the CODESIGN_IDENTITY environment variable instead.
-IDENTITY="${CODESIGN_IDENTITY:--}"
+# Prefer a real identity over ad-hoc. An ad-hoc signature's designated
+# requirement is the code hash, so it changes on every build and macOS drops
+# the app's TCC permissions each time. A certificate keeps the requirement
+# stable, so Accessibility and Camera grants survive rebuilds.
+LOCAL_IDENTITY="Mac Utilities Local Signing"
+if [ -n "${CODESIGN_IDENTITY:-}" ]; then
+  IDENTITY="$CODESIGN_IDENTITY"
+elif security find-identity 2>/dev/null | grep -q "$LOCAL_IDENTITY"; then
+  IDENTITY="$LOCAL_IDENTITY"
+else
+  IDENTITY="-"
+  echo "    note: no signing identity found; falling back to ad-hoc."
+  echo "          TCC permissions will reset on every rebuild."
+  echo "          Run scripts/create-signing-identity.sh to fix that."
+fi
 ENTITLEMENTS="$SRC/Resources/$APP_NAME.entitlements"
 SIGN_ARGS=(--force --options runtime --timestamp=none --sign "$IDENTITY")
 [ -f "$ENTITLEMENTS" ] && SIGN_ARGS+=(--entitlements "$ENTITLEMENTS")

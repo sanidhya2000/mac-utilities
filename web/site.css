@@ -302,3 +302,33 @@ footer.site .spacer { margin-left: auto; }
   background: var(--bg-sunk); border: 1px solid var(--border);
   padding: 2px 7px; border-radius: 6px; font-size: 13.5px; font-family: var(--mono);
 }
+
+/* ── pilot / status badges ──────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 620; letter-spacing: .02em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--tint, var(--accent)) 14%, transparent);
+  color: var(--tint, var(--accent));
+  border: 1px solid color-mix(in srgb, var(--tint, var(--accent)) 30%, transparent);
+}
+.app.pilot { opacity: .92; }
+.app .title-row { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
+.app .title-row h3 { margin: 0; }
+
+.notice {
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  background: var(--accent-weak);
+  border-radius: var(--radius-lg); padding: 24px 26px; margin: 0 auto 8px;
+  max-width: 760px; text-align: left;
+}
+.notice .head {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  font-weight: 640; font-size: 16.5px; color: var(--accent);
+}
+.notice p { margin: 0 0 10px; font-size: 15px; color: var(--text-soft); }
+.notice p:last-child { margin-bottom: 0; }
+.notice ul { margin: 10px 0 0; padding-left: 20px; }
+.notice li { font-size: 15px; color: var(--text-soft); margin-bottom: 5px; }
+.notice .ok { color: var(--text); font-weight: 560; }

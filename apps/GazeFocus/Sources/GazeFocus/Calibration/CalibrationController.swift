@@ -12,10 +12,81 @@ import GazeCore
 @MainActor
 final class CalibrationController: ObservableObject {
 
-    /// Fractional positions within each display.
-    private static let targets: [(x: Double, y: Double)] = [
+    /// Base pattern within each display: centre plus four inset corners.
+    /// Corners are inset rather than flush because people rarely turn far
+    /// enough to look at a true corner, and a target nobody looks at poisons
+    /// the fit.
+    private static let baseTargets: [(x: Double, y: Double)] = [
         (0.50, 0.50), (0.12, 0.12), (0.88, 0.12), (0.12, 0.88), (0.88, 0.88),
     ]
+
+    /// One calibration target: where the dot goes on a given screen.
+    private struct Target {
+        let screen: NSScreen
+        let fraction: (x: Double, y: Double)
+    }
+
+    /// Builds the full sequence, adding extra points along any edge two
+    /// displays share.
+    ///
+    /// The corners of each screen teach the model its extremes, but the
+    /// decision that actually matters is *which* screen — and that boundary
+    /// runs along the shared edge. Without samples near it the model has to
+    /// extrapolate the most important line it will ever draw. On stacked
+    /// displays, where the screens may differ by only a few degrees of pitch,
+    /// this is the difference between reliable switching and none.
+    private static func buildTargets() -> [Target] {
+        let screens = NSScreen.screens
+        var targets: [Target] = []
+
+        for screen in screens {
+            for fraction in baseTargets {
+                targets.append(Target(screen: screen, fraction: fraction))
+            }
+            for fraction in sharedEdgeFractions(for: screen, among: screens) {
+                targets.append(Target(screen: screen, fraction: fraction))
+            }
+        }
+        return targets
+    }
+
+    /// Positions hugging each edge this screen shares with a neighbour.
+    private static func sharedEdgeFractions(for screen: NSScreen,
+                                            among screens: [NSScreen]) -> [(x: Double, y: Double)] {
+        let frame = screen.frame
+        var fractions: [(x: Double, y: Double)] = []
+        // How close to the boundary the extra dots sit.
+        let hug = 0.07
+        // Two dots per edge, spread along it.
+        let spread = [0.33, 0.67]
+        // Displays are rarely pixel-aligned; allow a little slack.
+        let tolerance: CGFloat = 4
+
+        for other in screens where other != screen {
+            let theirs = other.frame
+
+            // Neighbour on the right: our right edge is shared.
+            if abs(theirs.minX - frame.maxX) < tolerance, overlaps(frame.minY, frame.maxY, theirs.minY, theirs.maxY) {
+                fractions += spread.map { (1 - hug, $0) }
+            }
+            if abs(theirs.maxX - frame.minX) < tolerance, overlaps(frame.minY, frame.maxY, theirs.minY, theirs.maxY) {
+                fractions += spread.map { (hug, $0) }
+            }
+            // Neighbour above or below: a horizontal edge is shared.
+            if abs(theirs.minY - frame.maxY) < tolerance, overlaps(frame.minX, frame.maxX, theirs.minX, theirs.maxX) {
+                fractions += spread.map { ($0, 1 - hug) }
+            }
+            if abs(theirs.maxY - frame.minY) < tolerance, overlaps(frame.minX, frame.maxX, theirs.minX, theirs.maxX) {
+                fractions += spread.map { ($0, hug) }
+            }
+        }
+        return fractions
+    }
+
+    private static func overlaps(_ aMin: CGFloat, _ aMax: CGFloat,
+                                 _ bMin: CGFloat, _ bMax: CGFloat) -> Bool {
+        min(aMax, bMax) - max(aMin, bMin) > 40
+    }
 
     /// Samples are averaged over this window once the dot has settled.
     private static let dwell: TimeInterval = 1.6
@@ -102,39 +173,37 @@ final class CalibrationController: ObservableObject {
     @Published private(set) var dotIsSampling = false
 
     private func runSequence() async {
-        let screens = NSScreen.screens
-        let totalSteps = screens.count * Self.targets.count
+        let targets = Self.buildTargets()
         var step = 0
 
-        for screen in screens {
+        for target in targets {
+            guard isRunning else { return }
+
+            let screen = target.screen
             currentScreenName = screen.localizedName
             activeScreenID = FocusSwitcher.key(for: screen)
             let globalFrame = FocusSwitcher.globalFrame(of: screen)
 
-            for target in Self.targets {
-                guard isRunning else { return }
+            // Position within the window's own coordinate space.
+            dotPosition = CGPoint(x: target.fraction.x * screen.frame.width,
+                                  y: target.fraction.y * screen.frame.height)
+            dotIsSampling = false
 
-                // Position within the window's own coordinate space.
-                dotPosition = CGPoint(x: target.x * screen.frame.width,
-                                      y: target.y * screen.frame.height)
-                dotIsSampling = false
+            try? await Task.sleep(for: .seconds(Self.settleBeforeSampling))
+            guard isRunning else { return }
 
-                try? await Task.sleep(for: .seconds(Self.settleBeforeSampling))
-                guard isRunning else { return }
+            poseBuffer = []
+            isSampling = true
+            dotIsSampling = true
+            try? await Task.sleep(for: .seconds(Self.dwell))
+            isSampling = false
+            dotIsSampling = false
 
-                poseBuffer = []
-                isSampling = true
-                dotIsSampling = true
-                try? await Task.sleep(for: .seconds(Self.dwell))
-                isSampling = false
-                dotIsSampling = false
+            guard isRunning else { return }
+            record(target: target.fraction, globalFrame: globalFrame)
 
-                guard isRunning else { return }
-                record(target: target, globalFrame: globalFrame)
-
-                step += 1
-                progress = Double(step) / Double(totalSteps)
-            }
+            step += 1
+            progress = Double(step) / Double(targets.count)
         }
 
         finalize()
@@ -184,7 +253,7 @@ final class CalibrationController: ObservableObject {
         // A very loose fit means the readings carried no usable signal — most
         // often a fixed head with only the eyes moving, which cannot be tracked.
         if model.meanError > 1200 {
-            CalibrationStore.shared.clear()
+            CalibrationStore.shared.clearCurrentLayout()
             finish(success: false,
                    message: "Readings were too inconsistent. Try turning your head a little more toward each dot.")
             return

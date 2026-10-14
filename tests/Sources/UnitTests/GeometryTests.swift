@@ -93,6 +93,25 @@ func runGeometryTests(_ h: Harness) {
         let farUp = ScreenGeometry.clamp(CGPoint(x: 500, y: -9000), to: frames)
         h.check("far-up prediction lands on a display", left.contains(farUp))
 
+        // The clamped point must clear any edge band applied afterwards,
+        // otherwise every corrected prediction is suppressed as "near the edge"
+        // and focus switching silently stops working altogether.
+        let margin: CGFloat = 40
+        let correctedFar = ScreenGeometry.clamp(CGPoint(x: -9000, y: 500), to: frames, inset: margin + 8)
+        h.check("clamped point clears the edge band",
+                !ScreenGeometry.isNearVerticalEdge(correctedFar, of: left, margin: margin),
+                "landed at x=\(correctedFar.x), band ends at \(left.minX + margin)")
+
+        let correctedRight = ScreenGeometry.clamp(CGPoint(x: 99999, y: 500), to: frames, inset: margin + 8)
+        h.check("clamped point clears the right edge band",
+                !ScreenGeometry.isNearVerticalEdge(correctedRight, of: right, margin: margin))
+
+        // A large inset must not fold past the middle of a narrow display.
+        let narrow = [CGRect(x: 0, y: 0, width: 60, height: 60)]
+        let folded = ScreenGeometry.clamp(CGPoint(x: -500, y: 30), to: narrow, inset: 400)
+        h.check("huge inset stays inside a small display", narrow[0].contains(folded),
+                "landed at \(folded)")
+
         // Degenerate input must not trap.
         let noScreens = ScreenGeometry.clamp(inside, to: [])
         h.close("empty layout returns the input", Double(noScreens.x), 500, 0.001)

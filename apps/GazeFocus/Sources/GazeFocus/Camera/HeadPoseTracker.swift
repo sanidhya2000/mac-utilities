@@ -8,6 +8,15 @@ import GazeCore
 final class HeadPoseTracker {
 
 
+    /// Allocated once. A fresh request per frame was measurable overhead at
+    /// 13 frames a second, and the object carries no state between frames.
+    private let request: VNDetectFaceRectanglesRequest = {
+        let request = VNDetectFaceRectanglesRequest()
+        // Revision 3 reports pitch as well as yaw and roll.
+        request.revision = VNDetectFaceRectanglesRequestRevision3
+        return request
+    }()
+
     /// Exponential smoothing factor. Low enough to kill per-frame jitter,
     /// high enough that a real head turn still lands within ~100ms.
     private let smoothing = 0.35
@@ -30,10 +39,6 @@ final class HeadPoseTracker {
     var onPose: ((HeadPose?) -> Void)?
 
     func process(_ pixelBuffer: CVPixelBuffer) {
-        let request = VNDetectFaceRectanglesRequest()
-        // Revision 3 reports pitch as well as yaw and roll.
-        request.revision = VNDetectFaceRectanglesRequestRevision3
-
         // A stateless per-image handler, not VNSequenceRequestHandler.
         // The sequence handler carries tracking state between frames and
         // assumes they are contiguous; once frames are dropped to hold the

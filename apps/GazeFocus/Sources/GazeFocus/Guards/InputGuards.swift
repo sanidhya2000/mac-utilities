@@ -95,6 +95,14 @@ final class InputGuards {
         Date().timeIntervalSince(lastTextKeystroke) < Prefs.shared.typingPauseSeconds
     }
 
+    /// Actively mid-sentence — a keystroke within the last moment. Distinct
+    /// from `isTyping`, which stays true through the whole trailing pause.
+    /// Screens may move during the pause; they must not move between two
+    /// keystrokes of the same word.
+    var isMidSentence: Bool {
+        Date().timeIntervalSince(lastTextKeystroke) < 0.9
+    }
+
     /// True while a modifier is physically down. Switching focus mid-chord
     /// would deliver the second half of the shortcut to a different app.
     var isHoldingModifier: Bool {

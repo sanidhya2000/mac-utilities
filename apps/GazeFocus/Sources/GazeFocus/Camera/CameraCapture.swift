@@ -19,9 +19,14 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
     private(set) var isRunning = false
 
-    /// Target processing rate. Head pose does not change meaningfully faster
-    /// than this, and Vision is the expensive part of the pipeline.
-    private let targetFPS = 15.0
+    /// Target processing rate.
+    ///
+    /// The camera insists on delivering ~26fps regardless of the format and
+    /// duration requested, so this throttle is what actually bounds the cost:
+    /// Vision runs only on frames that get through. A head does not change
+    /// angle meaningfully between 8 frames a second, and the settle delay is
+    /// 300ms anyway, so the lower rate costs nothing in responsiveness.
+    private let targetFPS = 8.0
     private var lastDelivered = CFAbsoluteTimeGetCurrent()
 
     /// Frames the camera produced versus frames passed on, so the probe can
@@ -59,7 +64,11 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
         }
 
         session.beginConfiguration()
-        session.sessionPreset = .hd1280x720
+        // No session preset is set here on purpose. A preset makes
+        // AVFoundation own the frame duration and silently override any cap,
+        // so the camera kept decoding ~29fps while we discarded most of it.
+        // Assigning `activeFormat` below switches the session to input
+        // priority by itself, which is what lets the rate cap hold.
 
         session.inputs.forEach { session.removeInput($0) }
         do {
@@ -87,8 +96,11 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
             if session.canAddOutput(output) { session.addOutput(output) }
         }
 
-        session.commitConfiguration()
+        // The format and rate cap must be applied *inside* the configuration
+        // block. Done after commit, the session's default `.high` preset wins
+        // and the camera keeps decoding at its native rate.
         applyFrameRateCap(to: device)
+        session.commitConfiguration()
 
         queue.async { [weak self] in
             self?.session.startRunning()
@@ -102,11 +114,27 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
         isRunning = false
     }
 
-    /// Caps capture at 15fps where the device allows it.
+    /// Picks a modest format and caps it at 15fps.
     private func applyFrameRateCap(to device: AVCaptureDevice) {
         do {
             try device.lockForConfiguration()
             defer { device.unlockForConfiguration() }
+
+            // Smallest format at least 640 wide that can run at 15fps. Head
+            // pose needs a face box and a coarse angle, not detail.
+            let suitable = device.formats.filter { format in
+                let size = CMVideoFormatDescriptionGetDimensions(format.formatDescription)
+                guard size.width >= 640, size.width <= 1280 else { return false }
+                return format.videoSupportedFrameRateRanges.contains {
+                    $0.minFrameRate <= 15 && $0.maxFrameRate >= 15
+                }
+            }
+            let chosenFormat = suitable.min {
+                let a = CMVideoFormatDescriptionGetDimensions($0.formatDescription)
+                let b = CMVideoFormatDescriptionGetDimensions($1.formatDescription)
+                return a.width * a.height < b.width * b.height
+            }
+            if let chosenFormat { device.activeFormat = chosenFormat }
 
             guard let range = device.activeFormat.videoSupportedFrameRateRanges.first else { return }
 

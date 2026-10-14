@@ -53,6 +53,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Log.info("GazeFocus started")
     }
 
+    /// Opening the app while it is already running reveals its controls.
+    ///
+    /// Menu bar icons are not guaranteed to be reachable: with enough of them
+    /// macOS hides the overflow, and on a notched Mac they disappear behind
+    /// the notch entirely. Without this, the app is running, using the camera,
+    /// and impossible to reach — the user cannot even quit it.
+    func applicationShouldHandleReopen(_ sender: NSApplication,
+                                       hasVisibleWindows: Bool) -> Bool {
+        menuBar?.revealControls()
+        return true
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         engine?.stop()
     }
