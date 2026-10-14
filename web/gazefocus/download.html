@@ -3,107 +3,65 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Download GazeFocus</title>
-<meta name="description" content="Download GazeFocus free for macOS 14 or later.">
+<title>GazeFocus — coming soon</title>
 <link rel="icon" type="image/png" href="../img/GazeFocus-128.png">
 <link rel="stylesheet" href="site.css">
-<style>:root { --accent: #2563eb; --accent-weak: #eff4ff; }
+<style>:root { --accent: #2563eb; --accent-weak: #eff4ff; --accent-2: #6366f1; --accent-3: #0ea5e9; }
 @media (prefers-color-scheme: dark) { :root { --accent-weak: #101c33; } }</style>
 </head>
 <body>
-
 <header class="site">
   <div class="wrap">
     <a class="brand" href="index.html"><img src="../img/GazeFocus-128.png" alt=""> GazeFocus</a>
-    <nav>
-      <a href="index.html#how">How it works</a>
-      <a href="index.html#features">Features</a>
-      <a href="privacy.html">Privacy</a>
-    <a href="../index.html">The suite</a>
-    </nav>
+    <nav><a href="index.html">Overview</a><a href="privacy.html">Privacy</a><a href="../index.html">The suite</a></nav>
   </div>
 </header>
 
-<div class="hero wrap" style="padding-bottom:40px">
-  <h1>Download the GazeFocus pilot</h1>
-  <p class="lede">Free and unlocked — but early. Accuracy varies a lot with where your camera sits.</p>
-  <div class="actions">
-    <a class="btn secondary" href="GazeFocus.dmg" download>Download GazeFocus.dmg</a>
+<div class="hero">
+  <div class="aurora"><span></span><span></span><span></span></div>
+  <div class="gridlines"></div>
+  <div class="wrap">
+    <img class="hero-icon" src="../img/GazeFocus-512.png" alt="GazeFocus">
+    <span class="badge soon" style="margin-bottom:24px">Coming soon</span>
+    <h1>Not ready to<br><span class="grad">download yet.</span></h1>
+    <p class="lede">
+      GazeFocus works, but not reliably enough on every setup to put a download
+      button here. When it does, it will be free like the other two.
+    </p>
+    <div class="actions">
+      <a class="btn" href="../wakehold/index.html">Try WakeHold instead</a>
+      <a class="btn secondary" href="index.html">Why it&rsquo;s not ready</a>
+    </div>
   </div>
-  <p class="meta">Pilot 1.0.0 · macOS 14 Sonoma or later · Apple silicon &amp; Intel</p>
 </div>
 
 <section>
   <div class="wrap prose">
-    <h2>Installing</h2>
-    <ol class="steps" style="margin-top:20px">
-      <li><strong>Open the disk image</strong><span>Drag GazeFocus into your Applications folder.</span></li>
-      <li><strong>Open it the first time</strong><span>Right-click the app and choose <em>Open</em>, then confirm. See the note below on why.</span></li>
-      <li><strong>Work through setup</strong><span>Camera, Accessibility, then calibration. About two minutes.</span></li>
-    </ol>
-
-    <div class="callout" style="margin-top:34px">
-      <strong>macOS will warn you on first launch.</strong>
-      <p>
-        GazeFocus isn't signed with a paid Apple Developer certificate, so Gatekeeper
-        shows &ldquo;GazeFocus cannot be opened because the developer cannot be
-        verified.&rdquo; This is expected. Right-click the app in Applications, choose
-        <em>Open</em>, and click <em>Open</em> in the dialog. You only do this once.
-      </p>
-      <p>
-        If the dialog won't let you through, go to System&nbsp;Settings ›
-        Privacy&nbsp;&amp;&nbsp;Security and click <em>Open Anyway</em>.
-      </p>
-    </div>
-
-    <h2>The two permissions it asks for</h2>
-    <h3>Camera</h3>
+    <h2>What has to be true before it ships</h2>
     <p>
-      Used to read the position of your head. Frames are processed on your Mac by
-      Apple's Vision framework and discarded immediately — never written to disk, never
-      uploaded. The app has no network entitlement at all.
+      One thing, really: it has to work on a desk that isn&rsquo;t mine. Accuracy
+      depends on where your camera sits relative to your screens, and the hardest
+      common case &mdash; a laptop under a large monitor &mdash; is exactly the one
+      most developers have.
     </p>
-    <h3>Accessibility</h3>
+    <h2>If you&rsquo;re curious anyway</h2>
     <p>
-      Required to move keyboard focus between other applications' windows. There is no
-      other API on macOS that can do this. macOS will send you to
-      System&nbsp;Settings › Privacy&nbsp;&amp;&nbsp;Security › Accessibility to tick
-      the box.
+      The full source is public, including the calibration maths, the
+      Accessibility focus switching, and the diagnostics that measure how well it
+      performs on a given setup.
     </p>
-
-
-    <div class="callout" style="margin-top:34px">
-      <strong>Check how it does on your setup.</strong>
-      <p>
-        Two built-in commands report honestly rather than making you guess:
-      </p>
-      <p><code>/Applications/GazeFocus.app/Contents/MacOS/GazeFocus --diagnose</code></p>
-      <p><code>/Applications/GazeFocus.app/Contents/MacOS/GazeFocus --probe-camera 8</code></p>
-      <p>
-        The probe counts frames and faces and prints the gaze point it predicts.
-        A calibration error under about 250&nbsp;points means it should feel
-        good; far above that and the camera is likely in an awkward spot for
-        your screen layout.
-      </p>
-    </div>
-
-    <h2>Uninstalling</h2>
-    <p>
-      Quit from the menu bar, drag the app to the Trash, and delete
-      <code>~/Library/Application Support/GazeFocus</code> if you want the calibration
-      data gone too. Nothing else is left behind.
-    </p>
+    <p><a class="btn secondary" href="https://github.com/sanidhya2000/mac-utilities">Read the source</a></p>
   </div>
 </section>
 
 <footer class="site">
   <div class="wrap">
-    <span>GazeFocus — free and open source</span>
+    <span>GazeFocus — in development</span>
     <span class="spacer"></span>
-    <a href="index.html">Home</a>
+    <a href="index.html">Overview</a>
     <a href="privacy.html">Privacy</a>
+    <a href="../index.html">The suite</a>
   </div>
 </footer>
-
 </body>
 </html>

@@ -8,6 +8,7 @@
 <link rel="icon" type="image/png" href="../img/WakeHold-128.png">
 <link rel="stylesheet" href="site.css">
 <style>:root { --accent: #d97706; --accent-weak: #fef5e7; }
+:root { --accent-2: #f59e0b; --accent-3: #ea580c; }
 @media (prefers-color-scheme: dark) { :root { --accent-weak: #2a1f0d; } }
 .diagram-text { fill: var(--muted); font-family: var(--font); font-size: 13px; }
 .diagram-label { fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600; }
@@ -30,10 +31,12 @@
 </header>
 
 <div class="hero">
+  <div class="aurora"><span></span><span></span><span></span></div>
+  <div class="gridlines"></div>
   <div class="wrap">
     <img class="hero-icon" src="../img/WakeHold-512.png" alt="WakeHold">
     <span class="pill"><span class="dot"></span> Free · macOS 14+</span>
-    <h1>Awake while it works.<br>Asleep when it's done.</h1>
+    <h1>Awake while it works.<br><span class="grad">Asleep when it's done.</span></h1>
     <p class="lede">Your Mac shouldn't sleep through a render, a build, or a long download — and it shouldn't stay awake all night afterwards either. WakeHold watches what's actually running and decides for you.</p>
     <div class="actions">
       <a class="btn" href="download.html">Download for macOS</a>
@@ -48,9 +51,9 @@
     <h2>Caffeinate is a blunt instrument</h2>
     <p class="sub">The usual options are "never sleep" and "sleep on a timer". Neither knows whether your export finished ten minutes ago or is still going.</p>
     <div class="grid c3">
-      <div class="card"><span class="ico">😴</span><h3>Slept mid-job</h3><p>You come back to a render that stopped at 40% because the idle timer won.</p></div>
-      <div class="card"><span class="ico">🔋</span><h3>Awake for nothing</h3><p>You left caffeinate running on Friday and found a flat battery on Monday.</p></div>
-      <div class="card"><span class="ico">🤷</span><h3>Guessing timers</h3><p>"Sleep after 3 hours" is a guess that is wrong in both directions.</p></div>
+      <div class="card reveal"><span class="ico">😴</span><h3>Slept mid-job</h3><p>You come back to a render that stopped at 40% because the idle timer won.</p></div>
+      <div class="card reveal"><span class="ico">🔋</span><h3>Awake for nothing</h3><p>You left caffeinate running on Friday and found a flat battery on Monday.</p></div>
+      <div class="card reveal"><span class="ico">🤷</span><h3>Guessing timers</h3><p>"Sleep after 3 hours" is a guess that is wrong in both directions.</p></div>
     </div>
   </div>
 </section>
@@ -98,12 +101,12 @@
   <div class="wrap">
     <h2>What it handles</h2>
     <div class="grid c2">
-      <div class="card"><span class="ico">🎬</span><h3>Knows your tools</h3><p>Recognises 38 apps across video, downloads, AI agents, development and sync, each with sensible thresholds. Anything unknown still counts if it is genuinely busy.</p></div>
-      <div class="card"><span class="ico">🎚️</span><h3>You choose what counts</h3><p>Two lists — staying awake for, and not watching. Click any app to move it between them. A VM that is always busy never holds your Mac awake again.</p></div>
-      <div class="card"><span class="ico">💻</span><h3>Works with the lid closed</h3><p>One-time admin approval, and a watchdog that restores normal sleep within seconds if it ever stops.</p></div>
-      <div class="card"><span class="ico">🔋</span><h3>Battery aware</h3><p>Stops holding below a threshold you set, and respects Low Power Mode. Never applies to desktops.</p></div>
-      <div class="card"><span class="ico">🌙</span><h3>Lets the screen sleep</h3><p>Only system sleep is held. Your display still goes dark on its own schedule — unless you would rather it did not.</p></div>
-      <div class="card"><span class="ico">🪶</span><h3>Barely there</h3><p>Well under 1% of one core. It is reading counters, not doing work.</p></div>
+      <div class="card reveal"><span class="ico">🎬</span><h3>Knows your tools</h3><p>Recognises 38 apps across video, downloads, AI agents, development and sync, each with sensible thresholds. Anything unknown still counts if it is genuinely busy.</p></div>
+      <div class="card reveal"><span class="ico">🎚️</span><h3>You choose what counts</h3><p>Two lists — staying awake for, and not watching. Click any app to move it between them. A VM that is always busy never holds your Mac awake again.</p></div>
+      <div class="card reveal"><span class="ico">💻</span><h3>Works with the lid closed</h3><p>One-time admin approval, and a watchdog that restores normal sleep within seconds if it ever stops.</p></div>
+      <div class="card reveal"><span class="ico">🔋</span><h3>Battery aware</h3><p>Stops holding below a threshold you set, and respects Low Power Mode. Never applies to desktops.</p></div>
+      <div class="card reveal"><span class="ico">🌙</span><h3>Lets the screen sleep</h3><p>Only system sleep is held. Your display still goes dark on its own schedule — unless you would rather it did not.</p></div>
+      <div class="card reveal"><span class="ico">🪶</span><h3>Barely there</h3><p>Well under 1% of one core. It is reading counters, not doing work.</p></div>
     </div>
 
     <h3 style="margin-top:48px;font-size:17px">Recognises, among others</h3>
@@ -122,10 +125,10 @@
     <h2>What it can see</h2>
     <p class="sub">Only activity counters — the same numbers Activity Monitor displays.</p>
     <div class="grid c2">
-      <div class="card"><h3>Not your content</h3><p>It reads how much CPU, disk and network each process used. Not what any of them were doing.</p></div>
-      <div class="card"><h3>No network</h3><p>Ships without the network entitlement. It cannot open a connection even by accident.</p></div>
-      <div class="card"><h3>No account</h3><p>Nothing to sign up for, nothing to verify. It is free.</p></div>
-      <div class="card"><h3>No analytics</h3><p>No telemetry, no crash reporting, no update pings.</p></div>
+      <div class="card reveal"><h3>Not your content</h3><p>It reads how much CPU, disk and network each process used. Not what any of them were doing.</p></div>
+      <div class="card reveal"><h3>No network</h3><p>Ships without the network entitlement. It cannot open a connection even by accident.</p></div>
+      <div class="card reveal"><h3>No account</h3><p>Nothing to sign up for, nothing to verify. It is free.</p></div>
+      <div class="card reveal"><h3>No analytics</h3><p>No telemetry, no crash reporting, no update pings.</p></div>
     </div>
   </div>
 </section>
@@ -149,5 +152,13 @@
   </div>
 </footer>
 
+<script>
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  } else { document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')); }
+</script>
 </body>
 </html>

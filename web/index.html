@@ -4,28 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Three small Mac utilities for people who leave things running</title>
-<meta name="description" content="GazeFocus, WakeHold and AFK — three free macOS menu bar utilities for developers. On-device, no accounts, no tracking.">
+<meta name="description" content="WakeHold, AFK and GazeFocus — free macOS menu bar utilities for developers. On-device, no accounts, no tracking.">
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="stylesheet" href="site.css">
 <style>
-  :root { --accent: #4f46e5; --accent-weak: #eef0ff; }
+  :root {
+    --accent: #4f46e5; --accent-2: #d97706; --accent-3: #059669;
+    --accent-weak: #eef0ff;
+  }
   @media (prefers-color-scheme: dark) { :root { --accent-weak: #171630; } }
 
-  /* Three icons fanned out above the headline. */
-  .stack { display: flex; justify-content: center; align-items: flex-end; gap: -10px; margin-bottom: 30px; }
+  .stack { display: flex; justify-content: center; align-items: flex-end; margin-bottom: 32px; }
   .stack img {
-    width: 82px; height: 82px; border-radius: 19px;
-    filter: drop-shadow(0 14px 30px rgba(0,0,0,.26));
-    transition: transform .25s cubic-bezier(.2,.8,.2,1);
+    width: 84px; height: 84px; border-radius: 20px;
+    filter: drop-shadow(0 16px 34px rgba(0,0,0,.3));
+    transition: transform .3s cubic-bezier(.2,.8,.2,1);
   }
-  .stack img:nth-child(1) { transform: rotate(-9deg) translateX(20px); z-index: 1; }
-  .stack img:nth-child(2) { width: 96px; height: 96px; z-index: 3; }
-  .stack img:nth-child(3) { transform: rotate(9deg) translateX(-20px); z-index: 1; }
-  .stack:hover img:nth-child(1) { transform: rotate(-13deg) translateX(6px); }
-  .stack:hover img:nth-child(3) { transform: rotate(13deg) translateX(-6px); }
+  .stack img:nth-child(1) { transform: rotate(-10deg) translateX(22px); z-index: 1; }
+  .stack img:nth-child(2) { width: 100px; height: 100px; z-index: 3; }
+  .stack img:nth-child(3) { transform: rotate(10deg) translateX(-22px); z-index: 1; }
+  .stack:hover img:nth-child(1) { transform: rotate(-15deg) translateX(2px) translateY(-5px); }
+  .stack:hover img:nth-child(2) { transform: translateY(-7px) scale(1.04); }
+  .stack:hover img:nth-child(3) { transform: rotate(15deg) translateX(-2px) translateY(-5px); }
 
-  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
-  @media (max-width: 880px) { .pair { grid-template-columns: 1fr; } }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
+
+  .stat { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 44px; }
+  .stat div { text-align: center; }
+  .stat .n { font-size: 30px; font-weight: 700; letter-spacing: -.03em; }
+  .stat .l { font-size: 13px; color: var(--muted); margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -34,14 +42,16 @@
   <div class="wrap">
     <a class="brand" href="index.html"><span class="glyph">⌘</span> Mac utilities</a>
     <nav>
-      <a href="gazefocus/index.html">GazeFocus</a>
       <a href="wakehold/index.html">WakeHold</a>
       <a href="afk/index.html">AFK</a>
+      <a href="gazefocus/index.html">GazeFocus</a>
     </nav>
   </div>
 </header>
 
 <div class="hero">
+  <div class="aurora"><span></span><span></span><span></span></div>
+  <div class="gridlines"></div>
   <div class="wrap">
     <div class="stack">
       <img src="img/GazeFocus-256.png" alt="GazeFocus">
@@ -49,26 +59,32 @@
       <img src="img/AFK-256.png" alt="AFK">
     </div>
     <span class="pill"><span class="dot"></span> Free · Open source · macOS 14+</span>
-    <h1>Three small utilities for<br>people who leave things running.</h1>
+    <h1>Small tools for people who<br><span class="grad">leave things running.</span></h1>
     <p class="lede">
-      Menu bar tools that get out of the way. Two are ready to use; one is still
-      in pilot. Everything runs on your Mac — no accounts, no telemetry, and not
-      one of them can open a network connection.
+      Menu bar utilities that get out of the way. Everything runs on your Mac —
+      no accounts, no telemetry, and not one of them can open a network connection.
     </p>
     <div class="actions">
       <a class="btn" href="#apps">See the apps</a>
       <a class="btn secondary" href="https://github.com/sanidhya2000/mac-utilities">View source</a>
     </div>
+
+    <div class="stat">
+      <div><div class="n grad">&lt;1&nbsp;MB</div><div class="l">per app</div></div>
+      <div><div class="n grad">0</div><div class="l">network calls</div></div>
+      <div><div class="n grad">167</div><div class="l">tests passing</div></div>
+      <div><div class="n grad">£0</div><div class="l">forever</div></div>
+    </div>
   </div>
 </div>
 
-<section id="apps" style="border-top:none;padding-top:8px">
+<section id="apps" style="border-top:none;padding-top:20px">
   <div class="wrap">
     <div class="apps">
 
-      <a class="app" href="wakehold/index.html" style="--tint:#d97706">
+      <a class="app reveal" href="wakehold/index.html" style="--tint:#d97706">
         <img class="mark" src="img/WakeHold-256.png" alt="">
-        <h3>WakeHold</h3>
+        <div class="title-row"><h3>WakeHold</h3><span class="badge">Ready</span></div>
         <p class="what">Awake while it works</p>
         <p class="desc">
           Keeps your Mac awake only while something is genuinely busy — a render,
@@ -77,9 +93,9 @@
         <span class="go">Learn more <span>→</span></span>
       </a>
 
-      <a class="app" href="afk/index.html" style="--tint:#059669">
+      <a class="app reveal" href="afk/index.html" style="--tint:#059669">
         <img class="mark" src="img/AFK-256.png" alt="">
-        <h3>AFK</h3>
+        <div class="title-row"><h3>AFK</h3><span class="badge">Ready</span></div>
         <p class="what">Lock the Mac, not the work</p>
         <p class="desc">
           Locks your machine when you step away while your builds, agents and
@@ -88,19 +104,15 @@
         <span class="go">Learn more <span>→</span></span>
       </a>
 
-      <a class="app pilot" href="gazefocus/index.html" style="--tint:#2563eb">
+      <a class="app soon reveal" href="gazefocus/index.html" style="--tint:#2563eb">
         <img class="mark" src="img/GazeFocus-256.png" alt="">
-        <div class="title-row">
-          <h3>GazeFocus</h3>
-          <span class="badge">Pilot</span>
-        </div>
+        <div class="title-row"><h3>GazeFocus</h3><span class="badge soon">Coming soon</span></div>
         <p class="what">Focus follows your eyes</p>
         <p class="desc">
-          Moves keyboard focus to the screen you're looking at. Working, but
-          accuracy depends heavily on where your camera sits — still being
-          tuned before it's ready to recommend.
+          Moves keyboard focus to the screen you're looking at. The tracking
+          works — getting it accurate on every desk does not yet. In development.
         </p>
-        <span class="go">Read the caveats <span>→</span></span>
+        <span class="go">What's left to solve <span>→</span></span>
       </a>
 
     </div>
@@ -113,28 +125,26 @@
     <p class="sub">No Dock icons, no windows in your way. A glance tells you what each one is doing.</p>
 
     <div class="pair">
-      <div class="menubar">
+      <div class="menubar reveal">
         <div class="bar">
-          <img src="img/GazeFocus-128.png" alt="">
           <img src="img/WakeHold-128.png" alt="">
           <img src="img/AFK-128.png" alt="">
           <span>Tue 14:32</span>
         </div>
         <div class="body">
-          <div class="row"><span>GazeFocus</span><span class="val">watching P27QD-40</span></div>
-          <div class="row"><span>WakeHold</span><span class="val">awake · ffmpeg working</span></div>
-          <div class="row"><span>AFK</span><span class="val">idle</span></div>
+          <div class="row"><span><span class="livedot"></span>WakeHold</span><span class="val">awake · ffmpeg working</span></div>
+          <div class="row"><span style="padding-left:13px">AFK</span><span class="val">idle</span></div>
         </div>
       </div>
 
-      <div class="grid" style="gap:14px">
-        <div class="card">
+      <div class="grid" style="gap:16px">
+        <div class="card reveal">
           <h3>Readable at a glance</h3>
           <p>Each icon changes with state — filled while holding, outlined when idle, a warning when something needs you.</p>
         </div>
-        <div class="card">
+        <div class="card reveal">
           <h3>Built-in diagnostics</h3>
-          <p>Every app can explain what it sees from the terminal, so a settings problem never gets mistaken for a permissions one.</p>
+          <p>Every app explains what it sees from the terminal, so a settings problem never gets mistaken for a permissions one.</p>
         </div>
       </div>
     </div>
@@ -146,12 +156,12 @@
     <h2>WakeHold or AFK?</h2>
     <p class="sub">They solve adjacent problems and work well together.</p>
     <div class="grid c2">
-      <div class="card">
+      <div class="card reveal" style="--tint:#d97706">
         <span class="ico" style="background:#fef5e7;color:#d97706">☕</span>
         <h3>WakeHold is automatic</h3>
         <p>Always on in the background, inferring from activity whether to hold sleep. You never think about it. It can let go if a process goes quiet.</p>
       </div>
-      <div class="card">
+      <div class="card reveal" style="--tint:#059669">
         <span class="ico" style="background:#e7f8f1;color:#059669">🔒</span>
         <h3>AFK is deliberate</h3>
         <p>You arm it when you walk away. It locks the screen and holds regardless, until the condition you chose. Use it when leaving the machine matters.</p>
@@ -160,14 +170,39 @@
   </div>
 </section>
 
-<section class="sunk center">
+<section class="sunk">
+  <div class="wrap">
+    <h2>WakeHold knows your tools</h2>
+    <p class="sub">38 apps recognised across video, downloads, AI agents, development and sync — and anything unknown still counts if it's genuinely busy.</p>
+    <div class="marquee">
+      <div class="track">
+        <div class="compat" style="flex-wrap:nowrap">
+          <span>Final Cut Pro</span><span>Premiere Pro</span><span>DaVinci Resolve</span><span>Logic Pro</span>
+          <span>ffmpeg</span><span>HandBrake</span><span>Chrome</span><span>Safari</span><span>Arc</span>
+          <span>Transmission</span><span>Claude Code</span><span>Codex</span><span>Gemini CLI</span><span>Aider</span>
+          <span>Ollama</span><span>Xcode</span><span>Docker</span><span>npm</span><span>cargo</span><span>Gradle</span>
+          <span>Dropbox</span><span>Google Drive</span><span>Backblaze</span><span>Time Machine</span><span>rsync</span>
+        </div>
+        <div class="compat" aria-hidden="true" style="flex-wrap:nowrap">
+          <span>Final Cut Pro</span><span>Premiere Pro</span><span>DaVinci Resolve</span><span>Logic Pro</span>
+          <span>ffmpeg</span><span>HandBrake</span><span>Chrome</span><span>Safari</span><span>Arc</span>
+          <span>Transmission</span><span>Claude Code</span><span>Codex</span><span>Gemini CLI</span><span>Aider</span>
+          <span>Ollama</span><span>Xcode</span><span>Docker</span><span>npm</span><span>cargo</span><span>Gradle</span>
+          <span>Dropbox</span><span>Google Drive</span><span>Backblaze</span><span>Time Machine</span><span>rsync</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="center">
   <div class="wrap">
     <h2>What they have in common</h2>
     <p class="sub">Three small tools, one set of principles.</p>
     <div class="grid c3">
-      <div class="card"><span class="ico">🔌</span><h3>No network</h3><p>None ships with the network entitlement. macOS itself prevents them from opening a connection.</p></div>
-      <div class="card"><span class="ico">🆓</span><h3>Actually free</h3><p>No trial, no licence key, no upsell. Nothing to sign up for.</p></div>
-      <div class="card"><span class="ico">🪶</span><h3>Light</h3><p>Universal binaries under 1 MB each, idling near zero CPU.</p></div>
+      <div class="card reveal"><span class="ico">🔌</span><h3>No network</h3><p>None ships with the network entitlement. macOS itself prevents them from opening a connection.</p></div>
+      <div class="card reveal"><span class="ico">🆓</span><h3>Actually free</h3><p>No trial, no licence key, no upsell. Nothing to sign up for.</p></div>
+      <div class="card reveal"><span class="ico">🪶</span><h3>Light</h3><p>Universal binaries under 1 MB each, idling near zero CPU.</p></div>
     </div>
   </div>
 </section>
@@ -176,12 +211,24 @@
   <div class="wrap">
     <span>Free and open source</span>
     <span class="spacer"></span>
-    <a href="gazefocus/index.html">GazeFocus</a>
     <a href="wakehold/index.html">WakeHold</a>
     <a href="afk/index.html">AFK</a>
+    <a href="gazefocus/index.html">GazeFocus</a>
     <a href="https://github.com/sanidhya2000/mac-utilities">GitHub</a>
   </div>
 </footer>
+
+<script>
+  // Reveal on scroll. Degrades to everything visible if unsupported.
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  }
+</script>
 
 </body>
 </html>

@@ -7,7 +7,7 @@
 <meta name="description" content="GazeFocus moves keyboard focus to the screen you're looking at, so you can stop clicking before you type. Free, on-device, for macOS.">
 <link rel="icon" type="image/png" href="../img/GazeFocus-128.png">
 <link rel="stylesheet" href="site.css">
-<style>:root { --accent: #2563eb; --accent-weak: #eff4ff; }
+<style>:root { --accent: #2563eb; --accent-weak: #eff4ff; --accent-2: #6366f1; --accent-3: #0ea5e9; }
 @media (prefers-color-scheme: dark) { :root { --accent-weak: #101c33; } }
 .diagram-text { fill: var(--muted); font-family: var(--font); font-size: 13px; }
 .diagram-label { fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600; }
@@ -24,65 +24,74 @@
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
       <a href="privacy.html">Privacy</a>
-      <a href="download.html" class="btn small">Download</a>
+      <span class="badge soon">Coming soon</span>
     </nav>
   </div>
 </header>
 
 <div class="hero">
+  <div class="aurora"><span></span><span></span><span></span></div>
+  <div class="gridlines"></div>
   <div class="wrap">
     <img class="hero-icon" src="../img/GazeFocus-512.png" alt="GazeFocus">
-    <span class="pill"><span class="dot"></span> Pilot · Free · macOS 14+</span>
-    <h1>Stop clicking<br>before you type.</h1>
-    <p class="lede">GazeFocus watches which screen you're facing and moves keyboard focus there automatically. Look at the other monitor, start typing — the text lands where you're looking.</p>
+    <span class="badge soon" style="margin-bottom:24px">Coming soon</span>
+    <h1>Stop clicking<br><span class="grad">before you type.</span></h1>
+    <p class="lede">GazeFocus watches which screen you're facing and moves keyboard focus there automatically. The tracking works today. Making it accurate on <em>every</em> desk is what's left.</p>
     <div class="actions">
-      <a class="btn secondary" href="download.html">Try the pilot</a>
-      <a class="btn secondary" href="#how">How it works</a>
+      <a class="btn secondary" href="#status">What's left to solve</a>
+      <a class="btn secondary" href="#how">How it will work</a>
     </div>
-    <p class="meta">Early access · Free and open source · Accuracy depends on camera placement</p>
+    <p class="meta">In development · Will be free and open source, like the other two</p>
   </div>
 </div>
 
 
-<div class="wrap" style="padding-bottom:10px">
-  <div class="notice">
-    <div class="head">⚗︎ This one is still in pilot</div>
-    <p>
-      GazeFocus works — it tracks your head, moves focus between screens,
-      windows and split panes, and the safeguards are in place. What it is not
-      yet is <em>consistently</em> accurate, and that depends on something no
-      amount of code fixes: where your camera is.
-    </p>
-    <p><span class="ok">What works well today</span></p>
-    <ul>
-      <li>Side-by-side monitors, with a camera roughly between them</li>
-      <li>Window and split-pane focus within one screen</li>
-      <li>Every safeguard: typing, shortcuts, passwords, menus, the mouse</li>
-    </ul>
-    <p style="margin-top:14px"><span class="ok">Where it struggles</span></p>
-    <ul>
-      <li>Displays stacked vertically — a laptop under a big monitor is the
-          hardest case, because the camera looks up at a steep angle and the
-          two screens differ by only a few degrees of head tilt</li>
-      <li>Any setup where the camera cannot see your face while you look at
-          each screen</li>
-    </ul>
-    <p style="margin-top:14px">
-      You are welcome to try it, and the diagnostics will tell you honestly how
-      well it is doing on your setup. Just do not expect it to feel finished.
-      WakeHold and AFK are the two that are ready.
-    </p>
+<section id="status" style="border-top:none;padding-top:10px">
+  <div class="wrap">
+    <div class="notice">
+      <div class="head">⚗︎ Where this actually stands</div>
+      <p>
+        Everything in the pipeline works: the camera tracks head pose, the model
+        predicts where you're looking, and focus moves between screens, windows
+        and split panes. Every safeguard is in place — it won't switch
+        mid-keystroke, mid-shortcut, while a menu is open, or while you're
+        typing a password.
+      </p>
+      <p>
+        What isn't solved is <span class="ok">accuracy across different desks</span>,
+        and the hard part isn't code. It's geometry.
+      </p>
+      <p style="margin-top:14px"><span class="ok">Works well</span></p>
+      <ul>
+        <li>Side-by-side monitors with the camera roughly between them</li>
+        <li>Window and split-pane focus within a single screen</li>
+      </ul>
+      <p style="margin-top:14px"><span class="ok">Doesn't yet</span></p>
+      <ul>
+        <li>A laptop beneath a large monitor — the camera looks up at a steep
+            angle, and the two screens differ by only about 12&deg; of head tilt.
+            That's a thin signal to build reliable switching on.</li>
+        <li>Any layout where the camera can't see your face while you look at
+            each screen.</li>
+      </ul>
+      <p style="margin-top:16px">
+        Rather than ship something that works beautifully on one desk and badly
+        on the next, it stays here until that's fixed.
+        <a href="../wakehold/index.html">WakeHold</a> and
+        <a href="../afk/index.html">AFK</a> are ready today.
+      </p>
+    </div>
   </div>
-</div>
+</section>
 
 <section id="problem" class="sunk">
   <div class="wrap">
     <h2>The two-second tax on every monitor you own</h2>
     <p class="sub">A second display is supposed to save time. But every time you turn to it, macOS leaves focus behind — so you reach for the mouse, hunt for the window, click, and only then start typing. Dozens of times a day.</p>
     <div class="grid c3">
-      <div class="card"><span class="ico">⌨️</span><h3>Typing into the void</h3><p>You start a sentence on the second screen and discover it went into the chat window you left behind.</p></div>
-      <div class="card"><span class="ico">🖱️</span><h3>Mouse round-trips</h3><p>Every switch is a hand off the keyboard, a drag across two or three displays, and a click.</p></div>
-      <div class="card"><span class="ico">🪟</span><h3>Wrong window, right screen</h3><p>Clicking the display isn't enough — you still have to pick out the window you actually wanted.</p></div>
+      <div class="card reveal"><span class="ico">⌨️</span><h3>Typing into the void</h3><p>You start a sentence on the second screen and discover it went into the chat window you left behind.</p></div>
+      <div class="card reveal"><span class="ico">🖱️</span><h3>Mouse round-trips</h3><p>Every switch is a hand off the keyboard, a drag across two or three displays, and a click.</p></div>
+      <div class="card reveal"><span class="ico">🪟</span><h3>Wrong window, right screen</h3><p>Clicking the display isn't enough — you still have to pick out the window you actually wanted.</p></div>
     </div>
   </div>
 </section>
@@ -133,12 +142,12 @@
     <h2>Focus follows your eyes at three levels</h2>
     <p class="sub">Screen, window, and split pane.</p>
     <div class="grid c2">
-      <div class="card"><span class="ico">🖥️</span><h3>Switches screens</h3><p>Detects which display you're facing and restores the window you were last using there, rather than whatever happens to be frontmost.</p></div>
-      <div class="card"><span class="ico">🪟</span><h3>Switches windows</h3><p>Works on a single display too — look at a different window on the same screen and focus follows.</p></div>
-      <div class="card"><span class="ico">⌗</span><h3>Focuses split panes</h3><p>Inside editors and terminals, it focuses the individual pane you're reading, not just the window around it.</p></div>
-      <div class="card"><span class="ico">🎯</span><h3>Learns as you work</h3><p>Clicks that agree with its prediction are treated as hints and refine the fit. Clicks you make without looking are ignored.</p></div>
-      <div class="card"><span class="ico">⏸️</span><h3>Knows when to stay out of the way</h3><p>Never switches mid-keystroke, mid-shortcut, while a menu is open, or while you are typing a password.</p></div>
-      <div class="card"><span class="ico">📏</span><h3>Adapts to how you sit</h3><p>Compensates when you lean in or sit back, and says when it has drifted far enough to be worth recalibrating.</p></div>
+      <div class="card reveal"><span class="ico">🖥️</span><h3>Switches screens</h3><p>Detects which display you're facing and restores the window you were last using there, rather than whatever happens to be frontmost.</p></div>
+      <div class="card reveal"><span class="ico">🪟</span><h3>Switches windows</h3><p>Works on a single display too — look at a different window on the same screen and focus follows.</p></div>
+      <div class="card reveal"><span class="ico">⌗</span><h3>Focuses split panes</h3><p>Inside editors and terminals, it focuses the individual pane you're reading, not just the window around it.</p></div>
+      <div class="card reveal"><span class="ico">🎯</span><h3>Learns as you work</h3><p>Clicks that agree with its prediction are treated as hints and refine the fit. Clicks you make without looking are ignored.</p></div>
+      <div class="card reveal"><span class="ico">⏸️</span><h3>Knows when to stay out of the way</h3><p>Never switches mid-keystroke, mid-shortcut, while a menu is open, or while you are typing a password.</p></div>
+      <div class="card reveal"><span class="ico">📏</span><h3>Adapts to how you sit</h3><p>Compensates when you lean in or sit back, and says when it has drifted far enough to be worth recalibrating.</p></div>
     </div>
 
     <h3 style="margin-top:48px;font-size:17px">Split panes work in</h3>
@@ -156,12 +165,12 @@
     <h2>Tuned not to annoy you</h2>
     <p class="sub">A tool that fires too eagerly is worse than no tool at all. Every one of these is adjustable, and the defaults are deliberately cautious.</p>
     <div class="grid c3">
-      <div class="card"><h3>Settles first</h3><p>A 300 ms rest filters quick glances, so looking away briefly moves nothing.</p></div>
-      <div class="card"><h3>Waits for typing</h3><p>Focus never moves mid-keystroke, nor for a few seconds after your last one.</p></div>
-      <div class="card"><h3>Understands ⌘C</h3><p>A copy is not typing. After one, focus follows faster — so your paste lands where you are looking.</p></div>
-      <div class="card"><h3>Never mid-shortcut</h3><p>While a modifier is held, focus stays put so the rest of the chord reaches the same app.</p></div>
-      <div class="card"><h3>Respects passwords</h3><p>While macOS secure input is active, it stands down completely.</p></div>
-      <div class="card"><h3>Sleeps when you do</h3><p>Releases the camera the moment your Mac locks or sleeps — the camera light goes out.</p></div>
+      <div class="card reveal"><h3>Settles first</h3><p>A 300 ms rest filters quick glances, so looking away briefly moves nothing.</p></div>
+      <div class="card reveal"><h3>Waits for typing</h3><p>Focus never moves mid-keystroke, nor for a few seconds after your last one.</p></div>
+      <div class="card reveal"><h3>Understands ⌘C</h3><p>A copy is not typing. After one, focus follows faster — so your paste lands where you are looking.</p></div>
+      <div class="card reveal"><h3>Never mid-shortcut</h3><p>While a modifier is held, focus stays put so the rest of the chord reaches the same app.</p></div>
+      <div class="card reveal"><h3>Respects passwords</h3><p>While macOS secure input is active, it stands down completely.</p></div>
+      <div class="card reveal"><h3>Sleeps when you do</h3><p>Releases the camera the moment your Mac locks or sleeps — the camera light goes out.</p></div>
     </div>
   </div>
 </section>
@@ -171,10 +180,10 @@
     <h2>Private by design</h2>
     <p class="sub">The camera is the whole point of the app, so it is worth being precise about what happens to it.</p>
     <div class="grid c2">
-      <div class="card"><h3>Stays on your Mac</h3><p>Head position is computed with Apple's Vision framework, locally. Nothing is uploaded.</p></div>
-      <div class="card"><h3>Nothing is stored</h3><p>Frames live in memory for a few milliseconds and are discarded. Nothing is written to disk, ever.</p></div>
-      <div class="card"><h3>No network at all</h3><p>It ships without the network entitlement — it <em>cannot</em> open a connection, accidentally or otherwise.</p></div>
-      <div class="card"><h3>No account, no analytics</h3><p>Nothing to sign up for and no telemetry. It is free, so there is nothing to verify either.</p></div>
+      <div class="card reveal"><h3>Stays on your Mac</h3><p>Head position is computed with Apple's Vision framework, locally. Nothing is uploaded.</p></div>
+      <div class="card reveal"><h3>Nothing is stored</h3><p>Frames live in memory for a few milliseconds and are discarded. Nothing is written to disk, ever.</p></div>
+      <div class="card reveal"><h3>No network at all</h3><p>It ships without the network entitlement — it <em>cannot</em> open a connection, accidentally or otherwise.</p></div>
+      <div class="card reveal"><h3>No account, no analytics</h3><p>Nothing to sign up for and no telemetry. It is free, so there is nothing to verify either.</p></div>
     </div>
   </div>
 </section>
@@ -195,9 +204,9 @@
 
 <section class="center">
   <div class="wrap">
-    <h2>Want to try the pilot?</h2>
-    <p class="sub" style="margin:0 auto 30px">Free, about two minutes to set up — and the diagnostics will tell you how well it does on your setup.</p>
-    <a class="btn secondary" href="download.html">Download the pilot</a>
+    <h2>Not ready yet</h2>
+    <p class="sub" style="margin:0 auto 30px">When it works on any desk, it ships. Until then, the source is public if you're curious how it works.</p>
+    <a class="btn secondary" href="https://github.com/sanidhya2000/mac-utilities">Read the source</a>
   </div>
 </section>
 
@@ -205,12 +214,19 @@
   <div class="wrap">
     <span>GazeFocus — free and open source</span>
     <span class="spacer"></span>
-    <a href="download.html">Download</a>
     <a href="privacy.html">Privacy</a>
     <a href="../index.html">The suite</a>
     <a href="https://github.com/sanidhya2000/mac-utilities">GitHub</a>
   </div>
 </footer>
 
+<script>
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  } else { document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')); }
+</script>
 </body>
 </html>
