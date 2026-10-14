@@ -25,15 +25,23 @@ $APP_NAME $VERSION
 
 1. Drag $APP_NAME into the Applications folder beside this file.
 
-2. The first time you open it, macOS will say the developer cannot be
-   verified. That is expected: this build is not signed with a paid Apple
-   Developer certificate.
+2. The first time you open it, macOS will say Apple could not verify the
+   app. That is expected: this build is not signed with a paid Apple
+   Developer certificate. You only deal with it once.
 
-   Right-click $APP_NAME in Applications, choose Open, then click Open
-   in the dialog. You only need to do this once.
+   On macOS 15 Sequoia and later:
+     a. Double-click the app. Click Done on the warning.
+     b. Open System Settings > Privacy & Security.
+     c. Scroll to Security. Beside the app's name, click "Open Anyway".
+     d. Confirm with your password or Touch ID.
 
-   If that dialog will not let you through, open
-   System Settings > Privacy & Security and click "Open Anyway".
+   The "Open Anyway" button only shows for about an hour after a blocked
+   launch. If it is missing, try opening the app again first.
+
+   On macOS 14 Sonoma, right-clicking the app and choosing Open still
+   works. That shortcut was removed in macOS 15.
+
+   Full guide: https://apps.sanidhyasamadhiya.com/install.html
 
 3. $APP_NAME runs in the menu bar. It has no Dock icon and no main window.
 

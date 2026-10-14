@@ -15,7 +15,7 @@
 <header class="site">
   <div class="wrap">
     <a class="brand" href="index.html"><img src="../img/AFK-128.png" alt=""> AFK</a>
-    <nav><a href="index.html#features">Features</a><a href="privacy.html">Privacy</a></nav>
+    <nav><a href="../install.html">Install help</a><a href="index.html#features">Features</a><a href="privacy.html">Privacy</a></nav>
   </div>
 </header>
 
@@ -33,18 +33,25 @@
     <h2>Installing</h2>
     <ol class="steps" style="margin-top:20px">
       <li><strong>Open the disk image</strong><span>Drag AFK into your Applications folder.</span></li>
-      <li><strong>Open it the first time</strong><span>Right-click the app and choose <em>Open</em>, then confirm.</span></li>
+      <li><strong>Get past the first-launch block</strong><span>macOS will refuse once. See the <a href="../install.html">30-second guide</a> &mdash; on macOS 15+ it is System Settings › Privacy &amp; Security › Open Anyway.</span></li>
       <li><strong>Look for it in the menu bar</strong><span>AFK has no Dock icon or main window — it lives in the menu bar.</span></li>
     </ol>
 
     <div class="callout" style="margin-top:34px">
-      <strong>macOS will warn you on first launch.</strong>
+      <strong>macOS will block it on first launch. This is expected.</strong>
       <p>
-        AFK isn't signed with a paid Apple Developer certificate, so Gatekeeper says
-        the developer &ldquo;cannot be verified.&rdquo; This is expected. Right-click the app
-        in Applications, choose <em>Open</em>, and click <em>Open</em> in the dialog — once only.
+        You'll see &ldquo;Apple could not verify this app.&rdquo; It appears for every
+        app without a $99/year Apple certificate, and takes about 30 seconds to
+        get past &mdash; once, per app.
       </p>
-      <p>If the dialog won't let you through, open System&nbsp;Settings › Privacy&nbsp;&amp;&nbsp;Security and click <em>Open Anyway</em>.</p>
+      <p>
+        On macOS 15 and later you must use System&nbsp;Settings ›
+        Privacy&nbsp;&amp;&nbsp;Security › <em>Open&nbsp;Anyway</em>. The old
+        right-click trick was removed in macOS&nbsp;15.
+      </p>
+      <p style="margin-top:12px">
+        <a class="btn secondary small" href="../install.html">Step-by-step guide</a>
+      </p>
     </div>
 
     <h2>Permissions</h2>

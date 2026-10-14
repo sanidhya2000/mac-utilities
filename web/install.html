@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Opening the app on macOS — allow an unsigned app</title>
+<meta name="description" content="macOS blocks apps that aren't notarised. Here is exactly how to open WakeHold and AFK, for macOS 15 Sequoia and later, and for macOS 14 Sonoma.">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="stylesheet" href="site.css">
+<style>
+  :root { --accent: #4f46e5; --accent-2: #0ea5e9; --accent-3: #7c3aed; --accent-weak: #eef0ff; }
+  @media (prefers-color-scheme: dark) { :root { --accent-weak: #171630; } }
+
+  .dialog {
+    border: 1px solid var(--border-strong); border-radius: 12px;
+    background: var(--surface); box-shadow: var(--shadow-md);
+    max-width: 380px; padding: 22px; text-align: center; margin: 18px 0;
+  }
+  .dialog .icon { font-size: 34px; margin-bottom: 10px; }
+  .dialog .t { font-weight: 640; font-size: 14.5px; margin-bottom: 6px; }
+  .dialog .b { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+  .dialog .btns { display: flex; gap: 8px; justify-content: center; }
+  .dialog .btns span {
+    padding: 5px 16px; border-radius: 7px; font-size: 13px;
+    border: 1px solid var(--border-strong); color: var(--text-soft);
+  }
+  .dialog .btns span.primary { background: var(--accent); color: #fff; border-color: transparent; }
+
+  .pathbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    font-size: 14.5px; margin: 14px 0;
+  }
+  .pathbar b {
+    background: var(--bg-sunk); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 8px; font-weight: 560;
+  }
+  .pathbar i { color: var(--muted); font-style: normal; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 26px; flex-wrap: wrap; }
+  .tabs a {
+    padding: 9px 16px; border-radius: 9px; text-decoration: none;
+    border: 1px solid var(--border-strong); color: var(--text-soft); font-size: 14.5px;
+  }
+  .tabs a.on { background: var(--accent); color: #fff; border-color: transparent; font-weight: 560; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="glyph">⌘</span> Mac utilities</a>
+    <nav>
+      <a href="wakehold/index.html">WakeHold</a>
+      <a href="afk/index.html">AFK</a>
+      <a href="gazefocus/index.html">GazeFocus</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" style="padding-bottom:40px">
+  <div class="aurora"><span></span><span></span><span></span></div>
+  <div class="gridlines"></div>
+  <div class="wrap">
+    <span class="pill"><span class="dot"></span> Takes about 30 seconds</span>
+    <h1>&ldquo;Apple could not verify<br><span class="grad">this app.&rdquo;</span></h1>
+    <p class="lede">
+      That message is expected, and it does not mean anything is wrong with the
+      app. Here is exactly how to open it.
+    </p>
+  </div>
+</div>
+
+<section style="border-top:none;padding-top:0">
+  <div class="wrap">
+    <div class="notice" style="max-width:780px">
+      <div class="head">Why this happens</div>
+      <p>
+        Apple charges $99 a year for a Developer ID certificate. Without one,
+        macOS refuses to open an app the first time, whoever made it. These apps
+        are free and not monetised, so that certificate has not been bought yet.
+      </p>
+      <p>
+        You only do this once per app. Everything after that is normal.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="sunk">
+  <div class="wrap">
+    <div class="tabs">
+      <a class="on" href="#modern">macOS 15 Sequoia and later</a>
+      <a href="#sonoma">macOS 14 Sonoma</a>
+    </div>
+
+    <h2 id="modern">macOS 15 Sequoia, Tahoe and later</h2>
+    <p class="sub">
+      Apple removed the old right-click shortcut in macOS 15, so this is now the
+      only route. If someone told you to Control-click and choose Open, that
+      advice is out of date.
+    </p>
+
+    <ol class="steps">
+      <li>
+        <strong>Open the app normally</strong>
+        <span>
+          Double-click it in your Applications folder. You will get this, which
+          is the expected first step &mdash; click <em>Done</em>.
+        </span>
+        <div class="dialog">
+          <div class="icon">⚠️</div>
+          <div class="t">&ldquo;WakeHold&rdquo; Not Opened</div>
+          <div class="b">Apple could not verify &ldquo;WakeHold&rdquo; is free of malware that may harm your Mac or compromise your privacy.</div>
+          <div class="btns"><span>Move to Trash</span><span class="primary">Done</span></div>
+        </div>
+      </li>
+
+      <li>
+        <strong>Go straight to Privacy &amp; Security</strong>
+        <span>Do this right away &mdash; see the note below about the one-hour window.</span>
+        <div class="pathbar">
+          <b>&#63743; Apple menu</b><i>→</i><b>System Settings</b><i>→</i><b>Privacy &amp; Security</b>
+        </div>
+      </li>
+
+      <li>
+        <strong>Scroll to the bottom, to &ldquo;Security&rdquo;</strong>
+        <span>
+          You will see a line naming the app you just tried to open, with an
+          <em>Open Anyway</em> button beside it. Click it.
+        </span>
+        <div class="dialog" style="max-width:470px;text-align:left">
+          <div class="b" style="margin:0 0 10px">Security</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <span style="font-size:13.5px">&ldquo;WakeHold&rdquo; was blocked to protect your Mac.</span>
+            <span style="padding:5px 14px;border-radius:7px;font-size:13px;border:1px solid var(--border-strong)">Open Anyway</span>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <strong>Confirm</strong>
+        <span>
+          Enter your Mac password or use Touch ID, then click <em>Open Anyway</em>
+          once more in the dialog that follows.
+        </span>
+      </li>
+
+      <li>
+        <strong>Look in your menu bar</strong>
+        <span>
+          That is it. These apps have no Dock icon and no window &mdash; they run
+          as a small icon in the menu bar at the top right.
+        </span>
+      </li>
+    </ol>
+
+    <div class="callout" style="margin-top:34px;max-width:760px">
+      <strong>Don&rsquo;t see the &ldquo;Open Anyway&rdquo; button?</strong>
+      <p>
+        It only appears for about an hour after a blocked launch attempt. If the
+        Security section shows nothing, go back and double-click the app again,
+        then return to System Settings straight away.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="sonoma">macOS 14 Sonoma</h2>
+    <p class="sub">On Sonoma the older, quicker route still works.</p>
+    <ol class="steps">
+      <li><strong>Find the app in Applications</strong><span>Don&rsquo;t double-click it.</span></li>
+      <li><strong>Control-click (or right-click) it</strong><span>Choose <em>Open</em> from the menu.</span></li>
+      <li><strong>Click Open in the dialog</strong><span>This dialog has an <em>Open</em> button; the one you get from double-clicking does not. That is the whole difference.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sunk">
+  <div class="wrap">
+    <h2>Still stuck?</h2>
+    <div class="grid c2">
+      <div class="card">
+        <h3>&ldquo;The app is damaged and can&rsquo;t be opened&rdquo;</h3>
+        <p>
+          That usually means the download was interrupted, or the file was
+          unzipped by something that stripped it. Download the .dmg again and
+          drag the app straight from the mounted disk image into Applications.
+        </p>
+      </div>
+      <div class="card">
+        <h3>You prefer the terminal</h3>
+        <p>
+          Removing the quarantine flag has the same effect as Open&nbsp;Anyway:
+        </p>
+        <p style="margin-top:9px"><code>xattr -d com.apple.quarantine /Applications/WakeHold.app</code></p>
+      </div>
+      <div class="card">
+        <h3>Is this actually safe?</h3>
+        <p>
+          Fair question &mdash; you should ask it of any unsigned app. Neither app
+          ships with the network entitlement, so macOS itself prevents them from
+          opening a connection. No accounts, no analytics, nothing written
+          anywhere except their own preferences.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Check it yourself</h3>
+        <p>
+          The complete source is public, including the build scripts that produce
+          the exact app you downloaded.
+        </p>
+        <p style="margin-top:10px">
+          <a class="btn secondary small" href="https://github.com/sanidhya2000/mac-utilities">View the source</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="center">
+  <div class="wrap">
+    <h2>Ready to go</h2>
+    <p class="sub" style="margin:0 auto 30px">Both apps live in the menu bar and need no further setup.</p>
+    <div class="actions" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn" href="wakehold/download.html">Get WakeHold</a>
+      <a class="btn secondary" href="afk/download.html">Get AFK</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <span>Free and open source</span>
+    <span class="spacer"></span>
+    <a href="index.html">Home</a>
+    <a href="wakehold/index.html">WakeHold</a>
+    <a href="afk/index.html">AFK</a>
+    <a href="https://github.com/sanidhya2000/mac-utilities">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
